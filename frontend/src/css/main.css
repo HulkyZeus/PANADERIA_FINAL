@@ -1,0 +1,604 @@
+* {
+  padding: 0%;
+  margin: 0%;
+  box-sizing: border-box;
+  font-family: "Arima", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+a{
+  color: black;
+}
+
+a:hover{
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.Cabeza{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  z-index: 1;
+  gap: 2%;
+}
+
+.Logo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 63px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Footer */
+
+.ColFooter{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1%;
+}
+
+/* Nosotros */
+
+.AnimValor:hover{
+  box-shadow: 0px 0px 60px rgba(0, 0, 0, 0.5);
+  transform: translateY(-6px);
+  transition: 0.5s ease;
+}
+
+.GrayContent{
+  background-color: rgb(232, 232, 232);
+}
+
+
+/* Eventos */
+
+.PanOrigen{
+  background-image: url(/src/img/PanOrigen.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.CartaEvento{
+  transition: 0.5s ease-in-out;
+}
+
+.CartaEvento:hover{
+  transform: translateY(-6px);
+  transition: 0.5s ease;
+}
+
+/* Matrimonios */
+
+.Torta3Pisos{
+  background-image: url(/src/img/Torta3Pisos.webp);
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.CupcakesDecorados{
+  background-image: url(/src/img/CupcakesDecorados.webp);
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.PostresGourmet{
+  background-image: url(/src/img/PostresGourmet.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.GalletasPersonalizadas{
+  background-image: url(/src/img/GalletasPersonalizadas.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.MesaPostres{
+  background-image: url(/src/img/MesaPostres.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.CajaRight{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-right: 10%;
+  width: 600px;
+  height: 375px;
+  background-color: rgba(114, 93, 66, 0.6);
+  border-radius: 20px;
+  box-shadow: 0px 0px 40px rgba(114, 93, 66, 0.7);
+}
+
+.CajaLeft{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 10%;
+  width: 600px;
+  height: 375px;
+  background-color: rgba(114, 93, 66, 0.6);
+  border-radius: 20px;
+  box-shadow: 0px 0px 40px rgba(114, 93, 66, 0.7);
+}
+
+.TextoEvento{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80px;
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.FondoPan{
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(/src/img/FondoPan.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+}
+
+/* Baby Showers */
+
+.TortaBabyShower{
+  background-image: url(/src/img/TortaBabyShower.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.MacaronTonosPastel{
+  background-image: url(/src/img/MacaronBabyShower.webp);
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.CupcakesBabyShower{
+  background-image: url(/src/img/CupcakesBabyShower.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.MacaronTonosPastel{
+  background-image: url(/src/img/MacaronBabyShower.webp);
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.GalletasBabyShower{
+  background-image: url(/src/img/GalletasBabyShower.webp);
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.Tartaletas{
+  background-image: url(/src/img/TartaletasFrutas.webp);
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Cumpleaños */
+
+.TortaCumpleaños{
+  background-image: url(/src/img/TortaCumpleaños.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.CupcakesColoridos{
+  background-image: url(/src/img/CupcakesColoridos.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.SnacksDivertidos{
+  background-image: url(/src/img/SnacksDivertidos.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.GalletasFiesta{
+  background-image: url(/src/img/GalletasFiesta.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.MesaCumpleaños{
+  background-image: url(/src/img/MesaCumpleaños.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Cumpleaños */
+
+.TortaFlores{
+  background-image: url(/src/img/TortaFlores.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.MacaronsCele{
+  background-image: url(/src/img/MacaronBabyShower.webp);
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.CupcakeAni{
+  background-image: url(/src/img/CupcakeAni.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.MiniTartas{
+  background-image: url(/src/img/TartaletasFrutas.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.GalletasAniversario{
+  background-image: url(/src/img/GalletasDecoradas.webp);
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Menu */
+
+.custom-card-container {
+  padding: 5px;
+  text-align: center;
+  justify-content: center;
+}
+
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.custom-card {
+  position: relative;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 1;
+  width: 200px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+
+.custom-card:hover {
+  transform: scale(1.02);
+}
+
+.custom-card .card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.custom-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.card-front {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-back {
+  background: rgba(255, 255, 255, 0.8); 
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: rotateY(180deg);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-back .background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(10px); 
+  z-index: -1; 
+}
+
+.card-header {
+  text-align: center;
+}
+
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.card-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+.price-overlay {
+  font-size: 18px;
+  font-weight: 900;
+  color: #000;
+  border-radius: 5px;
+  left: 50%;
+ 
+}
+
+.card-header h3 {
+  font-size: 18px;
+  margin: 10px 0 5px;
+}
+
+.card-header p {
+  font-size: 14px;
+  color: #555;
+}
+
+.card-content {
+  text-align: center;
+  display:block;
+}
+
+.add-to-cart {
+  margin-top: 10px;
+  padding: 8px 15px;
+  background: #571D0B;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-to-cart:hover {
+  background: #38160C;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  justify-content: center;
+}
+
+.quantity-box { 
+  width: 35px;
+  height: 35px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 5px;
+}
+
+.quantity-controls button {
+  width: 18px; 
+  height: 18px;
+  background-color: #571D0B; 
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  border: none;
+}
+
+.quantity-controls button:hover {
+  background: #38160C;
+}
+
+.quantity-controls .quantity {
+  font-size: 16px;
+  border: none;
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  background: #fff;
+  color: #571D0B;
+  cursor: pointer;
+}
+
+.arrow-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px; 
+}
+
+.background-image::before {
+  content: ''; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5); 
+  z-index: 0;
+}
+
+.product-name {
+  font-size: 23px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+  text-align: center; 
+  background: #571D0B;
+  border-radius: 5px;
+  justify-content: center;
+  padding:5%;
+}
