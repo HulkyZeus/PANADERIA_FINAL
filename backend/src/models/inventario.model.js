@@ -2,16 +2,12 @@
 import mongoose from "mongoose";
 
 const inventarioSchema = new mongoose.Schema({
-  ingrediente: {
+  producto: {
     type: String,
     required: true,
   },
   cantidad: {
     type: Number,
-    required: true,
-  },
-  unidad: {
-    type: String,
     required: true,
   },
 });

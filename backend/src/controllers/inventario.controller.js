@@ -9,28 +9,28 @@ export const obtenerInventario = async (req, res) => {
   }
 };
 
-export const obtenerIngredientePorId = async (req, res) => {
+export const obtenerProductoPorId = async (req, res) => {
   try {
-    const ingrediente = await Inventario.findById(req.params.id);
-    if (!ingrediente)
-      return res.status(404).json({ message: "Ingrediente no encontrado" });
-    res.json(ingrediente);
+    const producto = await Inventario.findById(req.params.id);
+    if (!producto)
+      return res.status(404).json({ message: "Producto no encontrado" });
+    res.json(producto);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const crearIngrediente = async (req, res) => {
+export const crearProducto = async (req, res) => {
   try {
-    const nuevoIngrediente = new Inventario(req.body);
-    const guardado = await nuevoIngrediente.save();
+    const nuevoProducto = new Inventario(req.body);
+    const guardado = await nuevoProducto.save();
     res.status(201).json(guardado);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const actualizarIngrediente = async (req, res) => {
+export const actualizarProducto = async (req, res) => {
   try {
     const actualizado = await Inventario.findByIdAndUpdate(
       req.params.id,
@@ -38,19 +38,19 @@ export const actualizarIngrediente = async (req, res) => {
       { new: true }
     );
     if (!actualizado)
-      return res.status(404).json({ message: "Ingrediente no encontrado" });
+      return res.status(404).json({ message: "Producto no encontrado" });
     res.json(actualizado);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const eliminarIngrediente = async (req, res) => {
+export const eliminarProducto = async (req, res) => {
   try {
     const eliminado = await Inventario.findByIdAndDelete(req.params.id);
     if (!eliminado)
-      return res.status(404).json({ message: "Ingrediente no encontrado" });
-    res.json({ message: "Ingrediente eliminado" });
+      return res.status(404).json({ message: "Producto no encontrado" });
+    res.json({ message: "Producto eliminado" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

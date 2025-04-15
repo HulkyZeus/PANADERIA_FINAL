@@ -18,5 +18,5 @@ app.use("/api", inventarioRoutes);
 
 connectDB();
 
-app.listen(5000);
-console.log("Servidor corriendo", 5000);
+app.listen(4000);
+console.log("Servidor corriendo", 4000);
