@@ -12,7 +12,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "backend": "file:",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
