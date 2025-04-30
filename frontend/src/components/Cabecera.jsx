@@ -1,6 +1,6 @@
 import 'antd/dist/reset.css';
 import '../css/main.css';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, Modal, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import LogoSimple from '../img/LogoSimple.webp';
@@ -69,16 +69,17 @@ const Cabecera = () => {
 
   
   const CartModal = () => (
+    // filepath: /Users/mariajosegarcia/Desktop/PANADERIA_FINAL/frontend/src/components/Cabecera.jsx
     <Modal
       title="Tu Carrito"
-      visible={isModalVisible}
+      open={isModalVisible} // Cambiado de "visible" a "open"
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
           Cerrar
         </Button>,
       ]}
-    >
+      >
       {cartItems.length === 0 ? (
         <p>El carrito está vacío.</p>
       ) : (
@@ -105,7 +106,7 @@ const Cabecera = () => {
           <Link to="/" className="Logo" style={{ marginRight: '20px' }}>
             <Imagen src={LogoSimple} />
           </Link>
-          <Dropdown overlay={languageMenu} trigger={['click']} style={{ marginRight: '20px', padding: '15px' }}>
+          <Dropdown menu={languageMenu} trigger={['click']} style={{ marginRight: '20px', padding: '15px' }}>
             <Space style={{ fontSize: '20px', color: '#541e12' }}>
               {i18n.language === 'es' && 'ES'}
               {i18n.language === 'en' && 'EN'}
@@ -117,7 +118,7 @@ const Cabecera = () => {
 
         <div style={{ marginLeft: 'auto' }}>
           <Menu
-            theme='#f0ca83'
+            theme="#f0ca83"
             mode="horizontal"
             overflowedIndicator={null}
             selectable={false}
@@ -130,36 +131,46 @@ const Cabecera = () => {
               justifyContent: 'space-between',
               padding: '0 20px',
             }}
-          >
-            <Menu.Item key="1">
-              <Dropdown menu={{ items }}>
-                <a onClick={(e) => e.preventDefault()}>
-                  <Space style={{ color: '#541e12' }}>
-                    {t("Menú")}
-                    <DownOutlined style={{ fontSize: '15px' }} />
-                  </Space>
-                </a>
-              </Dropdown>
-            </Menu.Item>
-
-            <Menu.Item key="2">
-              <Link to="/Nosotros" style={{ color: '#541e12' }}>{t("Nosotros")}</Link>
-            </Menu.Item>
-
-            <Menu.Item key="3">
-              <Link to="/Eventos" style={{ color: '#541e12' }}>{t("Eventos")}</Link>
-            </Menu.Item>
-
-            <Menu.Item key="4">
-              <Link to="/API" style={{ color: '#541e12' }}>{t("API")}</Link>
-            </Menu.Item>
-
-            <Menu.Item key="6">
-              <div style={{ marginLeft: '20px', verticalAlign: 'middle' }} onClick={showModal}>
-                <img src={shoppingcart} alt="Carrito" style={{ width: '23px', height: '23px' }} />
-              </div>
-            </Menu.Item>
-          </Menu>
+            items={[
+              {
+                key: "1",
+                label: (
+                  <Dropdown menu={{ items }}>
+                    <a onClick={(e) => e.preventDefault()}>
+                      <Space style={{ color: '#541e12' }}>
+                        {t("Menú")}
+                        <DownOutlined style={{ fontSize: '15px' }} />
+                      </Space>
+                    </a>
+                  </Dropdown>
+                ),
+              },
+              {
+                key: "2",
+                label: <Link to="/Nosotros" style={{ color: '#541e12' }}>{t("Nosotros")}</Link>,
+              },
+              {
+                key: "3",
+                label: <Link to="/Eventos" style={{ color: '#541e12' }}>{t("Eventos")}</Link>,
+              },
+              {
+                key: "4",
+                label: <Link to="/API" style={{ color: '#541e12' }}>{t("API")}</Link>,
+              },
+              {
+                key: "6",
+                label: (
+                  <div style={{ marginLeft: '20px', verticalAlign: 'middle' }} onClick={showModal}>
+                    <img src={shoppingcart} alt="Carrito" style={{ width: '23px', height: '23px' }} />
+                  </div>
+                ),
+              },
+              {
+                key: "7",
+                label: <Link to="/Login" style={{ color: '#541e12' }}><UserOutlined /></Link>,
+              },
+            ]}
+          />
         </div>
       </Header>
 

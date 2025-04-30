@@ -15,6 +15,7 @@ import Bebidas from "./pages/Bebidas";
 import Combos from "./pages/Combos";
 import CFooter from "./components/CFooter";
 import Cabecera from "./components/Cabecera";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -35,6 +36,8 @@ function App() {
         <Route path="/Desayunos" element={<Desayunos />} />
         <Route path="/Bebidas" element={<Bebidas />} />
         <Route path="/Combos" element={<Combos />} />
+        <Route path="/Login" element={<Login />} />
+       
         
       </Routes>
       <CFooter />
