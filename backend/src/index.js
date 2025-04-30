@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 import taskRoutes from "./routes/tasks.routes.js";
 import pedidosRoutes from "./routes/pedidos.routes.js";
+import reviewRoutes from "./routes/review.routes.js"
+import eventosRoutes from "./routes/eventos.routes.js"
 import inventarioRoutes from "./routes/inventario.routes.js";
 const app = express();
 app.use(morgan("dev"));
@@ -14,6 +16,8 @@ app.use(cookieParser());
 app.use("/api", authRoutes);
 app.use("/api", taskRoutes);
 app.use("/api", pedidosRoutes);
+app.use("/api", reviewRoutes);
+app.use("/api", eventosRoutes);
 app.use("/api", inventarioRoutes);
 
 connectDB();

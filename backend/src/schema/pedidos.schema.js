@@ -10,10 +10,5 @@ export const pedidoSchema = z.object({
   estado: z.string({
     required_error: "Estado es requerido",
   }),
-  fecha: z
-    .string({
-      required_error: "Fecha es requerida",
-    })
-    .datetime()
-    .or(z.string()),
+  fecha: z.string().optional(),
 });
