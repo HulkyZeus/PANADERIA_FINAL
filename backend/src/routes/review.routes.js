@@ -1,15 +1,14 @@
-// routes/review.routes.js
 import { Router } from "express";
 import {
   crearReview,
   obtenerReviews,
-  ObtenerReviewPorId,
+  obtenerReviewPorId,
   actualizarReview,
   eliminarReview,
 } from "../controllers/review.controller.js";
 
 import { validateSchema } from "../middlewares/validator.middleware.js";
-import { pedidoSchema } from "../schema/review.schema.js";
+import { reviewSchema } from "../schema/review.schema.js"; // Cambiado de pedidoSchema a reviewSchema
 import { authRequired } from "../middlewares/validateToken.js";
 
 const router = Router();
@@ -18,13 +17,13 @@ const router = Router();
 router.get("/reviews", authRequired, obtenerReviews);
 
 // Obtener una review por ID
-router.get("/reviews/:id", authRequired, ObtenerReviewPorId);
+router.get("/reviews/:id", authRequired, obtenerReviewPorId);
 
 // Crear una nueva review
 router.post(
   "/reviews",
   authRequired,
-  validateSchema(pedidoSchema),
+  validateSchema(reviewSchema), // Cambiado de pedidoSchema a reviewSchema
   crearReview
 );
 
@@ -32,12 +31,11 @@ router.post(
 router.put(
   "/reviews/:id",
   authRequired,
-  validateSchema(pedidoSchema),
+  validateSchema(reviewSchema), // Cambiado de pedidoSchema a reviewSchema
   actualizarReview
 );
 
 // Eliminar una review
 router.delete("/reviews/:id", authRequired, eliminarReview);
-
 
 export default router;
