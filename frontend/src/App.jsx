@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AuthProvider } from './context/AuthContext'; // Importa el AuthProvider
 import Inicio from "./pages/Inicio";
 import Menu from "./pages/Menu";
 import Nosotros from "./pages/Nosotros";
@@ -15,33 +16,35 @@ import Bebidas from "./pages/Bebidas";
 import Combos from "./pages/Combos";
 import CFooter from "./components/CFooter";
 import Cabecera from "./components/Cabecera";
-import Login from "./pages/Login";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
 
 function App() {
   return (
-    <Router>
-      <Cabecera />
-      <Routes>
-        <Route path="/" element={<Inicio />} />
-        <Route path="/Menu" element={<Menu />} />
-        <Route path="/Nosotros" element={<Nosotros />} />
-        <Route path="/Eventos" element={<Eventos />} />
-        <Route path="/Matrimonios" element={<Matrimonios />} />
-        <Route path="/BabyShowers" element={<BabyShowers />} />
-        <Route path="/Aniversarios" element={<Aniversarios />} />
-        <Route path="/Cumpleaños" element={<Cumpleaños />} />        
-        <Route path="/API" element={<API />} />
-        <Route path="/Panaderia" element={<Panaderia />} />
-        <Route path="/Pasteleria" element={<Pasteleria />} />
-        <Route path="/Desayunos" element={<Desayunos />} />
-        <Route path="/Bebidas" element={<Bebidas />} />
-        <Route path="/Combos" element={<Combos />} />
-        <Route path="/Login" element={<Login />} />
-       
-        
-      </Routes>
-      <CFooter />
-    </Router>
+    <AuthProvider>  {/* Envuelve tu Router con AuthProvider */}
+      <Router>
+        <Cabecera />
+        <Routes>
+          <Route path="/" element={<Inicio />} />
+          <Route path="/Menu" element={<Menu />} />
+          <Route path="/Nosotros" element={<Nosotros />} />
+          <Route path="/Eventos" element={<Eventos />} />
+          <Route path="/Matrimonios" element={<Matrimonios />} />
+          <Route path="/BabyShowers" element={<BabyShowers />} />
+          <Route path="/Aniversarios" element={<Aniversarios />} />
+          <Route path="/Cumpleaños" element={<Cumpleaños />} />        
+          <Route path="/API" element={<API />} />
+          <Route path="/Panaderia" element={<Panaderia />} />
+          <Route path="/Pasteleria" element={<Pasteleria />} />
+          <Route path="/Desayunos" element={<Desayunos />} />
+          <Route path="/Bebidas" element={<Bebidas />} />
+          <Route path="/Combos" element={<Combos />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Register" element={<Register />} />
+        </Routes>
+        <CFooter />
+      </Router>
+    </AuthProvider>
   );
 }
 
