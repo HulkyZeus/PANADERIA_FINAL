@@ -13,8 +13,11 @@ import cors from "cors";
 
 
 const app = express();
+
+// Configuración de CORS
+const allowedOrigins = [process.env.CLIENT_URL || "http://localhost:5173"];
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: allowedOrigins,
   credentials: true,
 }));
 
@@ -33,6 +36,13 @@ app.use("/api", pedidosRoutes);
 app.use("/api", reviewRoutes);
 app.use("/api", eventosRoutes);
 app.use("/api", inventarioRoutes);
+
+// Manejo de errores globales
+app.use((err, req, res, next) => {
+  console.error("Error en el servidor:", err);
+  res.status(500).json({ message: "Error interno del servidor" });
+});
+
 
 //Conexión al servidor
 app.listen(4000);

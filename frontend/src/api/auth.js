@@ -1,9 +1,10 @@
-import axios from "./axios.js";
+import axios from './axios'
 
-export const loginRequest = (credentials) => axios.post("/auth/login", credentials);
+export const registerRequest = user => axios.post(`/register`, user)
 
-export const registerRequest = (user) => axios.post("/auth/register", user);
+export const loginRequest = user => axios.post(`/login`, user)
 
-export const logoutRequest = () => axios.post("/auth/logout");
-
-export const verifyTokenRequest = () => axios.get("/auth/verify");
+export const verifyTokenRequest = (token) => 
+    axios.get('/verify', {
+        headers: { Authorization: `Bearer ${token}` }
+    })
