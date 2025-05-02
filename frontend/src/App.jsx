@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { AuthProvider } from './context/AuthContext'; // Importa el AuthProvider
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './ProtectedRoute'
 import Inicio from "./pages/Inicio";
 import Menu from "./pages/Menu";
 import Nosotros from "./pages/Nosotros";
@@ -16,8 +17,9 @@ import Bebidas from "./pages/Bebidas";
 import Combos from "./pages/Combos";
 import CFooter from "./components/CFooter";
 import Cabecera from "./components/Cabecera";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
+import Prueba from "./pages/prueba.jsx";
 
 function App() {
   return (
@@ -39,8 +41,12 @@ function App() {
           <Route path="/Desayunos" element={<Desayunos />} />
           <Route path="/Bebidas" element={<Bebidas />} />
           <Route path="/Combos" element={<Combos />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
+          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/Register" element={<RegisterPage />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path='/prueba' element={<Prueba />} />
+          </Route>
         </Routes>
         <CFooter />
       </Router>
