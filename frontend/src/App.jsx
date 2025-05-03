@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './ProtectedRoute'
+import ProtectedRoute from './ProtectedRoute' // Importa tu componente ProtectedRoute
 import Inicio from "./pages/Inicio";
 import Menu from "./pages/Menu";
 import Nosotros from "./pages/Nosotros";
@@ -44,8 +44,9 @@ function App() {
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/Register" element={<RegisterPage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path='/prueba' element={<Prueba />} />
+          <Route element={<ProtectedRoute />}> {/* Acá son las rutas que están protegidas y son accesibles solo después de iniciar sesión */}
+            <Route path='/prueba' element={<Prueba />} /> {/* Ruta protegida */}
+            {/* Nuevas rutas protegidas */}
           </Route>
         </Routes>
         <CFooter />
