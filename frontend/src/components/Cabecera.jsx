@@ -123,7 +123,7 @@ const Cabecera = () => {
             overflowedIndicator={null}
             selectable={false}
             style={{
-              lineHeight: '70px',
+              lineHeight: '64px',
               width: '100%',
               alignItems: 'center',
               fontSize: '20px',
@@ -160,14 +160,14 @@ const Cabecera = () => {
               {
                 key: "6",
                 label: (
-                  <div style={{ marginLeft: '20px', verticalAlign: 'middle' }} onClick={showModal}>
-                    <img src={shoppingcart} alt="Carrito" style={{ width: '23px', height: '23px' }} />
+                  <div onClick={showModal}>
+                    <img src={shoppingcart} alt="Carrito" style={{ width: '22px', height: '100%', scale: '1.2' }} />
                   </div>
                 ),
               },
               {
                 key: "7",
-                label: <Link to="/Login" style={{ color: '#541e12' }}><UserOutlined /></Link>,
+                label: <Link to="/Login" style={{ color: '#541e12' }}><UserOutlined style={{ width: '100%', height: '100%', scale: '1.6' }}/></Link>,
               },
             ]}
           />

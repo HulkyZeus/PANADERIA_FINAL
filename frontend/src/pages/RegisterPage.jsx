@@ -11,6 +11,13 @@ import React from 'react'
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
+const DivInput = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  height: 70px;
+`
 
 const RegisterPage = () => {
   const { register, 
@@ -28,49 +35,69 @@ const RegisterPage = () => {
   })
   return (
     <>
-      <Layout style={{backgroundColor:'#e8e8e8'}}>
+      <Layout className='FondoPan'>
         <Content>
-          {
-            registerErrors.map((error, i) => (
-                <div className='bg-red-500 p-2 text-white' key={i}>
-                    {error}
-                </div>
-            ))
-          }
-            <h1>Register</h1>
-            <form onSubmit={onSubmit}>
-                <input 
-                    type='text' 
-                    { ...register("username", {required: true})} 
-                    placeholder='Username'
-                />
-                {errors.username && (
-                    <p>Username is Required</p>
-                )}
-                <input 
-                    type='email' 
-                    { ...register("email", {required: true})}
-                    placeholder='Email' 
-                />
-                {errors.email && (
-                    <p>Email is Required</p>
-                )}
-                <input 
-                    type='password' 
-                    { ...register("password", {required: true})}
-                    placeholder='Password' 
-                />
-                {errors.password && (
-                    <p>Password is Required</p>
-                )}
-                <button type='submit'>
-                    Register
-                </button>
-            </form>
-            <p>
-                Already have an account
-                <Link to="/login">Login</Link>
-            </p>          
+          <Row style={{ margin: '40px 0px' }}>
+            <Col span={4}>
+            </Col>
+            <Col span={16} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Card style={{ backgroundColor: '#fdf9ef', height: '450px', width: '100%', display: 'flex', justifyContent: 'center', boxShadow: '10px 10px 30px rgba(0, 0, 0, 0.25)' }}>
+                {
+                  registerErrors.map((error, i) => (
+                    <div key={i}>
+                      {error}
+                    </div>
+                  ))
+                }
+                <Title level={3} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '5px 0px' }}>
+                Regístrate
+                </Title>
+                <form onSubmit={onSubmit} style={{ height: '300px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                    <DivInput>
+                      <input 
+                          type='text' 
+                          { ...register("username", {required: true})} 
+                          placeholder='Nombre de usuario'
+                          style={{ width: '400px', height: '40px', borderRadius: '5px', padding: '10px', border: '1px solid #ccc' }}
+                      />
+                      {errors.username && (
+                          <Text type="danger" style={{ margin: '2px 0px' }}>Necesitas ingresar tu nombre de usuario</Text>
+                      )}
+                    </DivInput>
+                    <DivInput>
+                      <input 
+                          type='email' 
+                          { ...register("email", {required: true})}
+                          placeholder='Correo Electrónico'
+                          style={{ width: '400px', height: '40px', borderRadius: '5px', padding: '10px', border: '1px solid #ccc' }} 
+                      />
+                      {errors.email && (
+                          <Text type="danger" style={{ margin: '2px 0px' }}>Necesitas ingresar el correo electrónico</Text>
+                      )}
+                    </DivInput>
+                    <DivInput>
+                      <input 
+                          type='password' 
+                          { ...register("password", {required: true})}
+                          placeholder='Contraseña'
+                          style={{ width: '400px', height: '40px', borderRadius: '5px', padding: '10px', border: '1px solid #ccc' }}
+                      />
+                      {errors.password && (
+                          <Text type="danger" style={{ margin: '2px 0px' }}>Necesitas ingresar la contraseña</Text>
+                      )}
+                    </DivInput>
+                    <button type='submit' style={{ width: '400px', height: '40px', borderRadius: '5px', padding: '10px', margin: '5px 0px', border: '1px solid #ccc', backgroundColor: '#f0ca83', color: 'black', fontSize: '16px', cursor: 'pointer' }}>
+                        Registrar
+                    </button>
+                </form>
+                <Text style={{ width: '100%', textAlign: 'center', display: 'block', fontSize: '16px', margin: '5px 0px' }}>
+                  ¿Ya tienes cuenta? <Link to="/login" style={{ color: '#e9aa4e'}}>Iniciar Sesión :)</Link> 
+                </Text>                
+              </Card>
+            </Col>
+            <Col span={4}>
+            </Col>            
+          </Row>       
         </Content>
       </Layout>
     </>
