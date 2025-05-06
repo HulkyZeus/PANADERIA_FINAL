@@ -28,7 +28,7 @@ const LoginPage = () => {
     handleSubmit,
     formState: {errors},
   } = useForm()
-  const {signin, errors: signinErrors, isAuthenticated} = useAuth()
+  const {signin, errors: signinErrors, isAuthenticated, user} = useAuth()
 
   const navigate = useNavigate() 
 
@@ -37,8 +37,14 @@ const LoginPage = () => {
   })
 
   useEffect(() => {
-  if(isAuthenticated) navigate("/prueba")
-  }, [isAuthenticated])
+    if(isAuthenticated && user) {
+      if(user.role === 'admin') {
+        navigate('/admin/customers')
+      } else {
+        navigate('/prueba')
+      }
+    }
+  }, [isAuthenticated, user])
 
   return (
     <>

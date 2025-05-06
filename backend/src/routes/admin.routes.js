@@ -5,17 +5,24 @@ import {
   getUserById,
   updateUser,
   deleteUser,
-  createUser, // importa el nuevo controlador
+  createUser,
+  updateUserRole,
 } from "../controllers/admin.controller.js";
-import { authRequired } from "../middlewares/validateToken.js";
-import { isAdmin } from "../middlewares/isAdmin.js";
+import { authRequired, isAdmin } from "../middlewares/validateToken.js";
 
 const router = Router();
 
-router.get("/admin/users", authRequired, isAdmin, getAllUsers);
-router.get("/admin/users/:id", authRequired, isAdmin, getUserById);
-router.post("/admin/users", authRequired, isAdmin, createUser); // nueva ruta
-router.put("/admin/users/:id", authRequired, isAdmin, updateUser);
-router.delete("/admin/users/:id", authRequired, isAdmin, deleteUser);
+// Todas las rutas requieren autenticación y rol de admin
+router.use(authRequired, isAdmin);
+
+// Rutas CRUD básicas de usuarios
+router.get("/users", getAllUsers);
+router.get("/users/:id", getUserById);
+router.post("/users", createUser);
+router.put("/users/:id", updateUser);
+router.delete("/users/:id", deleteUser);
+
+// Ruta específica para gestión de roles
+router.put("/users/:id/role", updateUserRole);
 
 export default router;

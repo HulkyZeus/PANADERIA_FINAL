@@ -43,6 +43,7 @@ export const register = async (req, res) => {
             id: userSaved._id,
             username: userSaved.username,
             email: userSaved.email,
+            role: userSaved.role,
             createdAt: userSaved.createdAt,
             updatedAt: userSaved.updatedAt,
         });
@@ -72,7 +73,10 @@ export const login = async (req, res) => {
         }
 
         // Creación del token
-        const token = await createAccessToken({ id: userFound._id });
+        const token = await createAccessToken({ 
+            id: userFound._id,
+            role: userFound.role 
+        });
 
         // Configuración de la cookie
         res.cookie("token", token, {
@@ -85,6 +89,8 @@ export const login = async (req, res) => {
             id: userFound._id,
             username: userFound.username,
             email: userFound.email,
+            role: userFound.role,
+            token: token,
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt,
         });
@@ -122,6 +128,7 @@ export const profile = async (req, res) => {
             id: userFound._id,
             username: userFound.username,
             email: userFound.email,
+            role: userFound.role,
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt,
         });
@@ -156,6 +163,7 @@ export const verifyToken = async (req, res) => {
                 id: userFound._id,
                 username: userFound.username,
                 email: userFound.email,
+                role: userFound.role,
             });
         });
     } catch (error) {

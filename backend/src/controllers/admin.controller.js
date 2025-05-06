@@ -5,10 +5,10 @@ import bcrypt from "bcryptjs";
 // Obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, "-password"); // Excluir el campo password
+    const users = await User.find().select('-password');
     res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -61,17 +61,21 @@ export const createUser = async (req, res) => {
 // Actualizar un usuario
 export const updateUser = async (req, res) => {
   try {
-    const { username, email, role, password } = req.body;
-    const updateData = { username, email, role };
+    const { username, email, password } = req.body;
+    const updateData = { username, email };
 
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);
     }
 
-    const updated = await User.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
-      runValidators: true,
-    });
+    const updated = await User.findByIdAndUpdate(
+      req.params.id, 
+      updateData, 
+      { 
+        new: true,
+        runValidators: true,
+      }
+    ).select('-password');
 
     if (!updated) {
       return res.status(404).json({ message: "Usuario no encontrado" });
@@ -82,21 +86,52 @@ export const updateUser = async (req, res) => {
       username: updated.username,
       email: updated.email,
       role: updated.role,
+      createdAt: updated.createdAt,
+      updatedAt: updated.updatedAt
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
+// Actualizar el rol de un usuario
+export const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    if (!['admin', 'usuario'].includes(role)) {
+      return res.status(400).json({ message: 'Rol no válido' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { role },
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Eliminar un usuario
 export const deleteUser = async (req, res) => {
   try {
-    const deleted = await User.findByIdAndDelete(req.params.id);
-    if (!deleted) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+    const { id } = req.params;
+    const user = await User.findByIdAndDelete(id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
     }
-    res.json({ message: "Usuario eliminado correctamente" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    res.json({ message: 'Usuario eliminado correctamente' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

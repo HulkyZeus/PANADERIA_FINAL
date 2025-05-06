@@ -20,6 +20,9 @@ import Cabecera from "./components/Cabecera";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import Prueba from "./pages/prueba.jsx";
+import AdminDashboard from './pages/AdminDashboard';
+import AdminCustomers from './pages/AdminCustomers';
+import AdminProductos from './pages/admin/AdminProductos';
 
 function App() {
   return (
@@ -46,7 +49,10 @@ function App() {
 
           <Route element={<ProtectedRoute />}> {/* Acá son las rutas que están protegidas y son accesibles solo después de iniciar sesión */}
             <Route path='/prueba' element={<Prueba />} /> {/* Ruta protegida */}
-            {/* Nuevas rutas protegidas */}
+            <Route path='/admin' element={<AdminDashboard />}>
+              <Route path='customers' element={<AdminCustomers />} />
+              <Route path='products' element={<AdminProductos />} />
+            </Route>
           </Route>
         </Routes>
         <CFooter />

@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ignorar node_modules específicos
+frontend/node_modules/
+backend/node_modules/
+**/node_modules/
