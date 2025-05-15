@@ -13,4 +13,7 @@ router.post('/logout', logout);
 router.get('/verify', verifyToken);
 router.get("/profile", authRequired, profile);
 
+router.post("/users", validateSchema(userSchema), createUser);
+router.put("/users/:id", validateSchema(updateUserSchema), updateUser);
+
 export default router;

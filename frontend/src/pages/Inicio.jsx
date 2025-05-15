@@ -1,5 +1,5 @@
 // src/pages/Inicio.js
-import { Carousel, Card, Col, Row } from "antd";
+import { Carousel, Card, Col, Row, Rate, Form, Input, Button } from "antd";
 import Imagen1 from "../img/PanAlinado.jpg";
 import Imagen2 from "../img/Pan3.jpg";
 import Imagen3 from "../img/Pan2.jpg";
@@ -13,6 +13,9 @@ import Brownie from "../img/brownie.png";
 import Tartademanzana from "../img/tartademanzana.png";
 import Cheesecake from "../img/cheesecake.png";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import api from "../api/axios";
 
 import styled from "@emotion/styled";
 const contentStyle = {
@@ -45,6 +48,49 @@ const products = [
   { title: [t("Tarta de Manzana")], img: Tartademanzana },
   { title: [t("Cheesecake")], img: Cheesecake },
 ];
+
+  const { user } = useAuth(); // Obtenemos el usuario logueado desde el contexto
+  const [formVisible, setFormVisible] = useState(false); // Estado para controlar la visibilidad del formulario
+  const [reviews, setReviews] = useState([
+    {
+      name: "María López",
+      rating: 5,
+      description: t("El mejor pan que he probado, siempre fresco y delicioso."),
+    },
+    {
+      name: "Carlos Pérez",
+      rating: 4,
+      description: t("Muy buena calidad, aunque podrían mejorar el servicio."),
+    },
+    {
+      name: "Ana García",
+      rating: 5,
+      description: t("Las tartas son increíbles, especialmente la de manzana."),
+    },
+  ]);
+  const [form] = Form.useForm();
+
+  const handleAddReview = async (values) => {
+    const newReview = {
+      name: user.name, // Usamos el nombre del usuario logueado
+      rating: values.rating,
+      description: values.description,
+    };
+    try {
+      // Enviar la reseña al backend
+      const response = await api.post("/reviews", newReview);
+      console.log("Reseña guardada:", response.data);
+
+      // Actualizar el estado con la nueva reseña
+      setReviews([...reviews, newReview]);
+
+      // Limpiar el formulario y ocultarlo
+      form.resetFields();
+      setFormVisible(false);
+    } catch (error) {
+      console.error("Error al guardar la reseña:", error);
+    }
+  };
 
   return(
   <div>
@@ -115,6 +161,93 @@ const products = [
         ))}
       </Row>
     </div>
+    
+ {/* Sección de reseñas */}
+ <div
+        style={{
+          padding: "30px",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h2 style={{ textAlign: "left", marginBottom: "30px" }}>
+          {t("Reseñas de nuestros clientes")}
+        </h2>
+        <Row gutter={[16, 16]} justify="center">
+          {reviews.map((review, index) => (
+            <Col span={6} key={index}>
+              <Card>
+                <Card.Meta
+                  title={
+                    <div>
+                      <strong>{review.name}</strong>
+                      <Rate
+                        disabled
+                        defaultValue={review.rating}
+                        style={{ marginLeft: "10px" }}
+                      />
+                    </div>
+                  }
+                  description={review.description}
+                />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
+
+      {/* Botón para mostrar el formulario */}
+      <div
+        style={{
+          padding: "30px",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {!formVisible && (
+          <Button type="primary" onClick={() => setFormVisible(true)}>
+            {t("Danos tu opinión")}
+          </Button>
+        )}
+
+        {/* Formulario para agregar reseñas */}
+        {formVisible && (
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleAddReview}
+            style={{ maxWidth: "600px", width: "100%", marginTop: "20px" }}
+          >
+            <Form.Item
+              label={t("Puntuación")}
+              name="rating"
+              rules={[
+                { required: true, message: t("Por favor selecciona una puntuación") },
+              ]}
+            >
+              <Rate />
+            </Form.Item>
+            <Form.Item
+              label={t("Descripción")}
+              name="description"
+              rules={[
+                { required: true, message: t("Por favor escribe una descripción") },
+              ]}
+            >
+              <Input.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                {t("Enviar reseña")}
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
+      </div>
   </div>
   )
 };

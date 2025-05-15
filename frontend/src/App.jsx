@@ -23,6 +23,7 @@ import Prueba from "./pages/prueba.jsx";
 import AdminDashboard from './pages/AdminDashboard';
 import AdminCustomers from './pages/AdminCustomers';
 import AdminProductos from './pages/admin/AdminProductos';
+import Resenas from "./pages/Resenas";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
               <Route path='products' element={<AdminProductos />} />
             </Route>
           </Route>
+          <Route path="/Resenas" element={<Resenas />} />
         </Routes>
         <CFooter />
       </Router>
