@@ -24,6 +24,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminCustomers from './pages/AdminCustomers';
 import AdminProductos from './pages/admin/AdminProductos';
 import Resenas from "./pages/Resenas";
+import FormularioEvento from "./pages/FormularioEvento.jsx";
+
 
 function App() {
   return (
@@ -47,6 +49,7 @@ function App() {
           <Route path="/Combos" element={<Combos />} />
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/Register" element={<RegisterPage />} />
+          <Route path="/FormularioEvento" element={<FormularioEvento />} />
 
           <Route element={<ProtectedRoute />}> {/* Acá son las rutas que están protegidas y son accesibles solo después de iniciar sesión */}
             <Route path='/prueba' element={<Prueba />} /> {/* Ruta protegida */}

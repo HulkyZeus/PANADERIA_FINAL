@@ -136,14 +136,17 @@ const AdminProductos = () => {
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button
+          style={{ backgroundColor: '#e0b067', color: 'white' }}  
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => setIsModalVisible(true)}
         >
           Agregar Producto
         </Button>
+      </div>
+      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Select
-          style={{ width: 200 }}
+          style={{ width: 200 }} 
           value={selectedCategory}
           onChange={setSelectedCategory}
           options={categories}

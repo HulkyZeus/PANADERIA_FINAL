@@ -155,7 +155,7 @@ const Cabecera = () => {
               },
               {
                 key: "4",
-                label: <Link to="/API" style={{ color: '#541e12' }}>{t("API")}</Link>,
+                label: <Link to="/API" style={{ color: '#541e12' }}>{t("Ubicanos")}</Link>,
               },
               {
                 key: "6",
