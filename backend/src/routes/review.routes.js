@@ -9,7 +9,8 @@ import {
 
 import { validateSchema } from "../middlewares/validator.middleware.js";
 import { reviewSchema } from "../schema/review.schema.js"; // Cambiado de pedidoSchema a reviewSchema
-import { authRequired } from "../middlewares/validateToken.js";
+import { authRequired, isAdmin } from "../middlewares/validateToken.js";
+import { obtenerTodasLasReviews } from "../controllers/review.controller.js"; 
 
 const router = Router();
 
@@ -39,3 +40,5 @@ router.put(
 router.delete("/reviews/:id", authRequired, eliminarReview);
 
 export default router;
+
+router.get("/reviews/all", authRequired, isAdmin, obtenerTodasLasReviews);

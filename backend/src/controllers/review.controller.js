@@ -95,4 +95,3 @@ export const obtenerTodasLasReviews = async (req, res) => {
   }
 };
 
-router.get("/reviews/all", authRequired, isAdmin, obtenerTodasLasReviews);

@@ -3,6 +3,10 @@ import { login, register, logout, profile, verifyToken } from "../controllers/au
 import { authRequired } from '../middlewares/validateToken.js';
 import { validateSchema } from '../middlewares/validator.middleware.js';
 import { registerSchema, loginSchema } from '../Schema/auth.schema.js';
+import { userSchema } from "../schema/user.schema.js";
+import { createUser, updateUser } from "../controllers/admin.controller.js";
+import { updateUserSchema } from "../schema/user.schema.js";
+
 
 const router = Router();
 
