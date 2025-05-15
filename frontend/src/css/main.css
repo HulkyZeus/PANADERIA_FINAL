@@ -606,3 +606,19 @@ a:hover{
   justify-content: center;
   padding:5%;
 }
+
+.admin-sidebar .ant-menu-item-selected {
+  background-color: #e0b067 !important;               
+}
+
+.admin-sidebar .anticon {
+  color: #612c1d !important;
+}
+
+.admin-sidebar .ant-menu-item:hover {
+  background-color: #fddcaa !important;
+}
+
+.admin-sidebar .ant-menu-item{
+  color: #612c1d !important; 
+}

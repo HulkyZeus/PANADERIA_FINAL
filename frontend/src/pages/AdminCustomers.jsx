@@ -87,7 +87,7 @@ const AdminCustomers = () => {
       dataIndex: 'role',
       key: 'role',
       render: (role) => (
-        <Tag color={role === 'admin' ? 'red' : 'blue'}>
+        <Tag color={role === 'admin' ? 'green' : 'blue'}>
           {role === 'admin' ? 'Administrador' : 'Usuario'}
         </Tag>
       ),
@@ -105,8 +105,9 @@ const AdminCustomers = () => {
         <Space size="middle">
           <Button 
             type="primary" 
-            icon={<EditOutlined />} 
+            icon={<EditOutlined />}  
             onClick={() => handleEdit(record)}
+            style={{ backgroundColor: '#fff', color: '#612c1d', border: '1px solid #612c1d' }}
           >
             Editar
           </Button>
