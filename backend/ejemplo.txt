@@ -1,0 +1,6 @@
+Crear un .env y pegar esto
+CLOUDINARY_CLOUD_NAME=dbyuiinys
+CLOUDINARY_API_KEY=466335756724114
+CLOUDINARY_API_SECRET=B7MjuX-A-qU3jgy3QcxfqSuW4Dk
+
+MONGODB_URI=mongodb+srv://<user>:<password>@panaderia-horneados.vdch07y.mongodb.net/panaderia
