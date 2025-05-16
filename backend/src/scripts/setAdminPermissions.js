@@ -4,6 +4,7 @@ import { auth } from '../libs/firebase.js';
 const adminEmails = [
     'correo1@ejemplo.com',
     'correo2@ejemplo.com',
+    'laura@gmail.com'
     // Agrega los correos de tus compañeros aquí
 ];
 

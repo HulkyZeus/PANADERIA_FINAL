@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from './context/AuthContext';
+import { UserProvider } from './context/UserContext';
 import ProtectedRoute from './ProtectedRoute' // Importa tu componente ProtectedRoute
 import Inicio from "./pages/Inicio";
 import Menu from "./pages/Menu";
@@ -19,7 +20,7 @@ import CFooter from "./components/CFooter";
 import Cabecera from "./components/Cabecera";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
-import Prueba from "./pages/prueba.jsx";
+import UserDashboard from "./pages/UserDashboard.jsx";
 import AdminDashboard from './pages/AdminDashboard';
 import AdminCustomers from './pages/AdminCustomers';
 import AdminProductos from './pages/admin/AdminProductos';
@@ -29,7 +30,8 @@ import FormularioEvento from "./pages/FormularioEvento.jsx";
 
 function App() {
   return (
-    <AuthProvider>  {/* Envuelve tu Router con AuthProvider */}
+    <AuthProvider>
+    <UserProvider>
       <Router>
         <Cabecera />
         <Routes>
@@ -52,7 +54,7 @@ function App() {
           <Route path="/FormularioEvento" element={<FormularioEvento />} />
 
           <Route element={<ProtectedRoute />}> {/* Acá son las rutas que están protegidas y son accesibles solo después de iniciar sesión */}
-            <Route path='/prueba' element={<Prueba />} /> {/* Ruta protegida */}
+            <Route path='/user' element={<UserDashboard />} /> {/* Ruta protegida */}
             <Route path='/admin' element={<AdminDashboard />}>
               <Route path='customers' element={<AdminCustomers />} />
               <Route path='products' element={<AdminProductos />} />
@@ -62,6 +64,7 @@ function App() {
         </Routes>
         <CFooter />
       </Router>
+    </UserProvider>
     </AuthProvider>
   );
 }

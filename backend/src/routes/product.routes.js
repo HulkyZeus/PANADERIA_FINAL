@@ -6,7 +6,8 @@ import {
     updateProduct,
     deleteProduct
 } from "../controllers/product.controller.js";
-import { authRequired, isAdmin } from "../middlewares/validateToken.js";
+import { authRequired } from "../middlewares/validateToken.js";
+import { isAdmin } from "../middlewares/adminPermiso.js";
 import { upload } from "../middlewares/upload.js";
 
 const router = Router();

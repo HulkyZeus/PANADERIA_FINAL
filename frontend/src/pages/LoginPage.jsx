@@ -41,7 +41,7 @@ const LoginPage = () => {
       if(user.role === 'admin') {
         navigate('/admin/customers')
       } else {
-        navigate('/prueba')
+        navigate('/user')
       }
     }
   }, [isAuthenticated, user])
@@ -106,86 +106,3 @@ const LoginPage = () => {
 }
 
 export default LoginPage
-
-// function LoginPage() {
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm();
-//   const { signin, errors: signinErrors, isAuthenticated } = useAuth();
-//   const navigate = useNavigate();
-
-//   const onSubmit = (data) => {
-//     signin(data);
-//   };
-
-//   useEffect(() => {
-//     if (isAuthenticated) navigate("/tasks");
-//   }, [isAuthenticated, navigate]);
-
-//   return (
-//     <div
-//       style={{
-//         display: "flex",
-//         height: "calc(100vh - 100px)",
-//         alignItems: "center",
-//         justifyContent: "center",
-//       }}
-//     >
-//       <Card style={{ maxWidth: 400, width: "100%", padding: 20, borderRadius: 8 }}>
-//         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-//           {/* Mostrar errores de inicio de sesión */}
-//           {signinErrors.map((error, i) => (
-//             <Alert key={i} message={error} type="error" showIcon closable />
-//           ))}
-
-//           <Title level={3} style={{ textAlign: "center" }}>
-//             Login
-//           </Title>
-
-//           {/* Formulario */}
-//           <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-//             <Form.Item
-//               label="Email"
-//               validateStatus={errors.email ? "error" : ""}
-//               help={errors.email && "Email is required"}
-//             >
-//               <Input
-//                 type="email"
-//                 {...register("email", { required: true })}
-//                 placeholder="Enter your email"
-//                 size="large"
-//               />
-//             </Form.Item>
-
-//             <Form.Item
-//               label="Password"
-//               validateStatus={errors.password ? "error" : ""}
-//               help={errors.password && "Password is required"}
-//             >
-//               <Input.Password
-//                 {...register("password", { required: true })}
-//                 placeholder="Enter your password"
-//                 size="large"
-//               />
-//             </Form.Item>
-
-//             <Button type="primary" htmlType="submit" size="large" block>
-//               Login
-//             </Button>
-//           </Form>
-
-//           <Text style={{ textAlign: "center", display: "block" }}>
-//             Don't have an account?{" "}
-//             <Link to="/register">
-//               <Text type="success">Sign up</Text>
-//             </Link>
-//           </Text>
-//         </Space>
-//       </Card>
-//     </div>
-//   );
-// }
-
-// export default LoginPage;

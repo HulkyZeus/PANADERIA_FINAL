@@ -9,7 +9,8 @@ import {
 
 import { validateSchema } from "../middlewares/validator.middleware.js";
 import { reviewSchema } from "../schema/review.schema.js"; // Cambiado de pedidoSchema a reviewSchema
-import { authRequired, isAdmin } from "../middlewares/validateToken.js";
+import { authRequired } from "../middlewares/validateToken.js";
+import { isAdmin } from "../middlewares/adminPermiso.js";
 import { obtenerTodasLasReviews } from "../controllers/review.controller.js"; 
 
 const router = Router();

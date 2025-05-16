@@ -12,6 +12,7 @@ import eventosRoutes from "./routes/eventos.routes.js"
 import inventarioRoutes from "./routes/inventario.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import cors from "cors";
 
 
@@ -41,6 +42,7 @@ app.use("/api", eventosRoutes);
 app.use("/api", inventarioRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", productRoutes);
+app.use("/api", userRoutes);
 
 // Manejo de errores globales
 app.use((err, req, res, next) => {
