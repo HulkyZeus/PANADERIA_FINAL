@@ -1,6 +1,10 @@
 import User from "../models/user.model.js";
 
-export const isAdmin = async (req, res, next) => {
+/**
+ * Middleware que permite a los usuarios acceder a sus propios datos
+ * y a los administradores acceder a cualquier dato
+ */
+export const canAccessUserData = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
@@ -15,22 +19,23 @@ export const isAdmin = async (req, res, next) => {
       return next();
     }
 
-    // Si no es admin, verificar si está intentando acceder a sus propios datos
+    // Si no es admin, solo permitir acceso a sus propios datos
+    // Las rutas /me son específicamente para datos propios
     if (req.originalUrl.includes('/me')) {
       return next();
     }
 
-    // Si no es admin y no está accediendo a sus propios datos, denegar acceso
+    // Si no cumple ninguna condición, denegar acceso
     return res.status(403).json({ 
       success: false,
-      message: "Acceso denegado: solo para administradores" 
+      message: "No tienes permiso para acceder a estos datos" 
     });
 
-  } catch (err) {
-    console.error("Error en isAdmin middleware:", err);
+  } catch (error) {
+    console.error("Error en canAccessUserData:", error);
     return res.status(500).json({ 
       success: false,
       message: "Error al verificar permisos" 
     });
   }
-};
+}; 

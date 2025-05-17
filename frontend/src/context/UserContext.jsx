@@ -1,126 +1,91 @@
-import { 
-  createContext, 
-  useState, 
-  useContext, 
-  useEffect, 
-  useCallback
-} from "react";
-import { 
-  getProfileRequest,
-  updateProfileRequest,
-  changePasswordRequest
-} from "../api/user.services.js";
-import { useAuth } from "../context/AuthContext";
+import { createContext, useState, useContext, useCallback } from 'react';
+import axios from '../api/axios';
 
-export const UserContext = createContext();
+const UserContext = createContext();
 
 export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  return context;
+  return useContext(UserContext);
 };
 
 export const UserProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const { user, logout } = useAuth();
 
-  // Función para limpiar mensajes
-  const clearMessages = useCallback(() => {
-    setError(null);
-    setSuccess(null);
-  }, []);
-
-  // Cargar el perfil
   const loadProfile = useCallback(async () => {
     try {
       setLoading(true);
-      clearMessages();
-      const response = await getProfileRequest();
-      setProfile(response.data); // Asumimos que la respuesta viene en response.data
-    } catch (err) {
-      setError(err.response?.data?.message || "Error al cargar el perfil");
-      // Si el error es 401 (no autorizado), hacer logout
-      if (err.response?.status === 401) {
-        logout();
-      }
+      setError(null);
+      const response = await axios.get('/users/me', {
+        withCredentials: true
+      });
+      console.log('Profile response:', response.data); // Debug log
+      setProfile(response.data.data);
+      setSuccess('Perfil cargado correctamente');
+    } catch (error) {
+      console.error('Error loading profile:', error);
+      setError(error.response?.data?.message || 'Error al cargar el perfil');
     } finally {
       setLoading(false);
     }
-  }, [clearMessages, logout]);
+  }, []);
 
-  // Efecto para cargar el perfil inicial
-  useEffect(() => {
-    if (user) {
-      loadProfile();
-    } else {
-      setProfile(null); // Limpiar perfil si no hay usuario
-    }
-  }, [user, loadProfile]);
-
-  // Actualizar perfil
-  const updateProfile = async (userData) => {
+  const updateProfile = async (data) => {
     try {
       setLoading(true);
-      clearMessages();
-      const response = await updateProfileRequest(userData);
-      setProfile(response.data.user);
-      setSuccess("Perfil actualizado correctamente");
+      setError(null);
+      const response = await axios.put('/users/me', data, {
+        withCredentials: true
+      });
+      setProfile(response.data.data);
+      setSuccess('Perfil actualizado correctamente');
       return response.data;
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al actualizar el perfil";
-      setError(errorMsg);
-      throw new Error(errorMsg); // Permite manejar el error en el componente
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setError(error.response?.data?.message || 'Error al actualizar el perfil');
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Cambiar contraseña
-  const changePassword = async (passwordData) => {
+  const changePassword = async (data) => {
     try {
       setLoading(true);
-      clearMessages();
-      const response = await changePasswordRequest(passwordData);
-      setSuccess("Contraseña cambiada correctamente");
+      setError(null);
+      const response = await axios.put('/users/me/password', data, {
+        withCredentials: true
+      });
+      setSuccess('Contraseña actualizada correctamente');
       return response.data;
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al cambiar la contraseña";
-      setError(errorMsg);
-      throw new Error(errorMsg);
+    } catch (error) {
+      console.error('Error changing password:', error);
+      setError(error.response?.data?.message || 'Error al cambiar la contraseña');
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Eliminar cuenta
   const deleteAccount = async () => {
     try {
       setLoading(true);
-      clearMessages();
-      await deleteAccountRequest();
-      setSuccess("Cuenta eliminada correctamente");
-      logout(); // Cierra sesión después de eliminar la cuenta
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al eliminar la cuenta";
-      setError(errorMsg);
-      throw new Error(errorMsg);
+      setError(null);
+      await axios.delete('/users/me', {
+        withCredentials: true
+      });
+      setProfile(null);
+      setSuccess('Cuenta eliminada correctamente');
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      setError(error.response?.data?.message || 'Error al eliminar la cuenta');
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Limpiar mensajes después de 5 segundos
-  useEffect(() => {
-    const timer = setTimeout(clearMessages, 5000);
-    return () => clearTimeout(timer);
-  }, [error, success, clearMessages]);
-
-  // Valor proporcionado por el contexto
   const value = {
     profile,
     loading,
@@ -129,8 +94,7 @@ export const UserProvider = ({ children }) => {
     loadProfile,
     updateProfile,
     changePassword,
-    deleteAccount,
-    clearMessages
+    deleteAccount
   };
 
   return (

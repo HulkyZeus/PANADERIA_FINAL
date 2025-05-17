@@ -16,10 +16,13 @@ const AdminCustomers = () => {
 
   const fetchUsers = async () => {
     try {
+      console.log('Iniciando fetchUsers...'); // Debug log
       const response = await getUsersRequest();
+      console.log('Respuesta de getUsersRequest:', response); // Debug log
       setUsers(response.data);
       setLoading(false);
     } catch (error) {
+      console.error('Error detallado en fetchUsers:', error.response || error); // Debug log mejorado
       message.error('Error al cargar los usuarios');
       setLoading(false);
     }

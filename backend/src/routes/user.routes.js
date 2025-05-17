@@ -2,16 +2,21 @@ import { Router } from 'express';
 import { 
     getProfile,
     updateProfile,
-    changePassword
+    changePassword,
+    updateSelf
 } from '../controllers/user.controller.js';
 import { authRequired } from '../middlewares/validateToken.js';
 import { validateSchema } from '../middlewares/validator.middleware.js';
+import { canAccessUserData } from '../middlewares/userPermissions.js';
 import { 
     updateUserSchema,
     changePasswordSchema 
 } from '../schema/user.schema.js';
 
 const router = Router();
+
+// Todas las rutas requieren autenticación y verificación de permisos
+router.use(authRequired, canAccessUserData);
 
 /**
  * @desc    Rutas de perfil de usuario
@@ -20,20 +25,18 @@ const router = Router();
  */
 
 // Obtener perfil del usuario actual
-router.get('/profile', authRequired, getProfile);
+router.get('/me', getProfile);
 
-// Actualizar información básica del perfil
+// Actualizar datos del usuario actual
 router.put(
-    '/profile',
-    authRequired,
+    '/me',
     validateSchema(updateUserSchema),
-    updateProfile
+    updateSelf
 );
 
 // Cambiar contraseña del usuario
 router.put(
-    '/profile/password',
-    authRequired,
+    '/me/password',
     validateSchema(changePasswordSchema),
     changePassword
 );

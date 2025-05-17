@@ -2,18 +2,15 @@ import axios from './axios';
 
 /**
  * Obtiene el perfil del usuario actual
- * @returns {Promise<Object>} Datos del usuario
- * @throws {Error} Si falla la solicitud
+ * @returns {Promise<Object>} Datos del perfil
+ * @throws {Error} Si falla la petición
  */
 export const getProfileRequest = async () => {
   try {
-    const response = await axios.get('/profile');
+    const response = await axios.get('/api/users/profile');
     return response.data;
   } catch (error) {
-    const errorMessage = error.response?.data?.message || 
-                        error.message || 
-                        'Error al obtener el perfil';
-    console.error('Error en getProfileRequest:', errorMessage);
+    const errorMessage = error.response?.data?.message || 'Error al obtener el perfil';
     throw new Error(errorMessage);
   }
 };
@@ -26,41 +23,38 @@ export const getProfileRequest = async () => {
  */
 export const updateProfileRequest = async (userData) => {
   try {
-    // Validación básica de datos
-    if (!userData || typeof userData !== 'object') {
-      throw new Error('Datos de usuario no válidos');
-    }
-
-    const response = await axios.put('/profile', userData);
+    const response = await axios.put('/api/users/profile', userData);
     return response.data;
   } catch (error) {
-    const errorMessage = error.response?.data?.message || 
-                        error.message || 
-                        'Error al actualizar el perfil';
-    console.error('Error en updateProfileRequest:', errorMessage);
+    if (error.response?.data?.errors) {
+      // Si hay errores de validación, los formateamos
+      const validationErrors = error.response.data.errors;
+      const errorMessage = validationErrors.map(err => `${err.field}: ${err.message}`).join(', ');
+      throw new Error(errorMessage);
+    }
+    const errorMessage = error.response?.data?.message || 'Error al actualizar el perfil';
     throw new Error(errorMessage);
   }
 };
 
 /**
  * Cambia la contraseña del usuario
- * @param {Object} passwordData - {currentPassword, newPassword}
- * @returns {Promise<Object>} Respuesta del servidor
+ * @param {Object} passwordData - Datos de contraseña {currentPassword, newPassword, confirmPassword}
+ * @returns {Promise<Object>} Resultado de la operación
  * @throws {Error} Si falla el cambio de contraseña
  */
 export const changePasswordRequest = async (passwordData) => {
   try {
-    if (!passwordData?.currentPassword || !passwordData?.newPassword) {
-      throw new Error('Se requieren ambas contraseñas');
-    }
-
-    const response = await axios.put('/profile/password', passwordData);
+    const response = await axios.put('/api/users/profile/password', passwordData);
     return response.data;
   } catch (error) {
-    const errorMessage = error.response?.data?.message || 
-                        error.message || 
-                        'Error al cambiar la contraseña';
-    console.error('Error en changePasswordRequest:', errorMessage);
+    if (error.response?.data?.errors) {
+      // Si hay errores de validación, los formateamos
+      const validationErrors = error.response.data.errors;
+      const errorMessage = validationErrors.map(err => `${err.field}: ${err.message}`).join(', ');
+      throw new Error(errorMessage);
+    }
+    const errorMessage = error.response?.data?.message || 'Error al cambiar la contraseña';
     throw new Error(errorMessage);
   }
 };

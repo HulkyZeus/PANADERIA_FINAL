@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axios';
 import Cookies from 'js-cookie';
 
 const API_URL = 'http://localhost:4000/api';
@@ -15,11 +15,9 @@ const getAuthHeader = () => {
 export const createProduct = async (formData) => {
   try {
     const headers = {
-      ...getAuthHeader(),
       'Content-Type': 'multipart/form-data'
     };
-    console.log('Request headers:', headers); // Debug log
-    const response = await axios.post(`${API_URL}/products`, formData, { headers });
+    const response = await axios.post('/products', formData, { headers });
     return response;
   } catch (error) {
     console.error('Error completo:', error.response?.data || error);
@@ -29,7 +27,7 @@ export const createProduct = async (formData) => {
 
 export const getProducts = async () => {
   try {
-    const response = await axios.get(`${API_URL}/products`);
+    const response = await axios.get('/products');
     return response;
   } catch (error) {
     throw error;
@@ -38,7 +36,7 @@ export const getProducts = async () => {
 
 export const getProductsByCategory = async (category) => {
   try {
-    const response = await axios.get(`${API_URL}/products/${category}`);
+    const response = await axios.get(`/products/${category}`);
     return response;
   } catch (error) {
     throw error;
@@ -48,10 +46,9 @@ export const getProductsByCategory = async (category) => {
 export const updateProduct = async (id, productData) => {
   try {
     const headers = {
-      ...getAuthHeader(),
       'Content-Type': 'multipart/form-data'
     };
-    const response = await axios.put(`${API_URL}/products/${id}`, productData, { headers });
+    const response = await axios.put(`/products/${id}`, productData, { headers });
     return response;
   } catch (error) {
     throw error;
@@ -60,9 +57,7 @@ export const updateProduct = async (id, productData) => {
 
 export const deleteProduct = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/products/${id}`, {
-      headers: getAuthHeader()
-    });
+    const response = await axios.delete(`/products/${id}`);
     return response;
   } catch (error) {
     throw error;
