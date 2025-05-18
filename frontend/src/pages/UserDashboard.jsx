@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useUser } from "../context/UserContext";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { Modal, message } from 'antd';
+import { message } from 'antd';
 
 const DashboardContainer = styled.div`
   max-width: 800px;
@@ -80,14 +80,12 @@ const UserDashboard = () => {
     success,
     updateProfile,
     changePassword,
-    deleteAccount,
     loadProfile
   } = useUser();
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   // Cargar perfil al montar el componente
   useEffect(() => {
@@ -110,7 +108,8 @@ const UserDashboard = () => {
       message.success('Perfil actualizado correctamente');
       setIsEditing(false);
     } catch (error) {
-      message.error('Error al actualizar el perfil');
+      console.error("🔴 Error completo:", error.response?.data); // 👈 Más detalles del error
+      message.error(error.response?.data?.message || 'Error al actualizar el perfil');
     }
   };
 
@@ -118,26 +117,21 @@ const UserDashboard = () => {
     try {
       await changePassword({
         currentPassword: data.currentPassword,
-        newPassword: data.newPassword
+        newPassword: data.newPassword,
+        confirmPassword: data.confirmPassword // Asegúrate de enviar este campo
       });
       message.success('Contraseña cambiada correctamente');
       setIsChangingPassword(false);
       reset({}, { keepValues: false });
     } catch (error) {
-      message.error(error.response?.data?.message || 'Error al cambiar la contraseña');
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      await deleteAccount();
-      message.success('Cuenta eliminada correctamente');
-      logout();
-      navigate('/');
-    } catch (error) {
-      message.error('Error al eliminar la cuenta');
-    } finally {
-      setIsDeleteModalVisible(false);
+      console.error("Error detallado:", error.response?.data); // Para depuración
+      if (error.response?.data?.errors) {
+        error.response.data.errors.forEach(err => {
+          message.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        message.error(error.response?.data?.message || 'Error al cambiar la contraseña');
+      }
     }
   };
 

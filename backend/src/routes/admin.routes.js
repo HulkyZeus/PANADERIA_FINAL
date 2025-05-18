@@ -10,7 +10,6 @@ import {
 } from "../controllers/admin.controller.js";
 import { authRequired } from "../middlewares/validateToken.js";
 import { isAdmin } from "../middlewares/adminPermiso.js";
-import { canAccessUserData } from "../middlewares/userPermissions.js";
 
 const router = Router();
 

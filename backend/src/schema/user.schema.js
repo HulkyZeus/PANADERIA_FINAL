@@ -7,17 +7,22 @@ export const userSchema = z.object({
   role: z.enum(["usuario", "admin"]).optional().default("usuario"),
 });
 
-// Esquema para actualización de perfil
+// user.schema.js
 export const updateUserSchema = z.object({
-    username: z.string()
-        .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
-        .max(30, "El nombre de usuario no puede exceder 30 caracteres")
-        .regex(/^[a-zA-Z0-9_]+$/, "Solo se permiten letras, números y guiones bajos")
-        .optional(),
+  username: z.string()
+    .min(3, "Mínimo 3 caracteres")
+    .max(30, "Máximo 30 caracteres")
+    .regex(/^[a-zA-Z0-9_]+$/, "Solo letras, números y _")
+    .optional()
+    .transform(val => val?.trim()),
     
-    email: z.string()
-        .email("Correo electrónico no válido")
-        .optional(),
+  email: z.string()
+    .email("Email inválido")
+    .optional()
+    .transform(val => val?.toLowerCase().trim())
+}).refine(data => data.username || data.email, {
+  message: "Debe proporcionar al menos un campo para actualizar",
+  path: ["username"] // Para mostrar el error en el campo username
 });
 
 // Esquema para cambio de contraseña

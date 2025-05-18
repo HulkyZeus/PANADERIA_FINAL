@@ -20,7 +20,6 @@ export const UserProvider = ({ children }) => {
       const response = await axios.get('/users/me', {
         withCredentials: true
       });
-      console.log('Profile response:', response.data); // Debug log
       setProfile(response.data.data);
       setSuccess('Perfil cargado correctamente');
     } catch (error) {
@@ -35,7 +34,7 @@ export const UserProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.put('/users/me', data, {
+      const response = await axios.put('/users/me/update', data, {
         withCredentials: true
       });
       setProfile(response.data.data);
@@ -68,24 +67,6 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const deleteAccount = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      await axios.delete('/users/me', {
-        withCredentials: true
-      });
-      setProfile(null);
-      setSuccess('Cuenta eliminada correctamente');
-    } catch (error) {
-      console.error('Error deleting account:', error);
-      setError(error.response?.data?.message || 'Error al eliminar la cuenta');
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const value = {
     profile,
     loading,
@@ -93,8 +74,7 @@ export const UserProvider = ({ children }) => {
     success,
     loadProfile,
     updateProfile,
-    changePassword,
-    deleteAccount
+    changePassword
   };
 
   return (

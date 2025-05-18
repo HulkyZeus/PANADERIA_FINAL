@@ -38,4 +38,4 @@ export const canAccessUserData = async (req, res, next) => {
       message: "Error al verificar permisos" 
     });
   }
-}; 
+};
