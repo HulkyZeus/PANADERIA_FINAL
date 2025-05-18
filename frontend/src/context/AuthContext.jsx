@@ -1,99 +1,112 @@
-import { createContext, useState, useContext, useEffect } from "react";
-import { registerRequest, loginRequest, verifyTokenRequest } from "../api/auth.js";
-import Cookies from 'js-cookie';
+import { createContext, useState, useContext } from 'react';
+import axios from '../api/axios';
 
-export const AuthContext = createContext()
+const AuthContext = createContext();
+
 export const useAuth = () => {
-    const context = useContext(AuthContext)
-    if(!context){
-        throw new Error("useAuth must be used within an AuthProvider")
+  return useContext(AuthContext);
+};
+
+export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const login = async (email, password) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.post('/login', { email, password }, {
+        withCredentials: true
+      });
+      
+      // El token viene en las cookies, no necesitamos guardarlo manualmente
+      const userData = response.data;
+      
+      // Actualizar el estado
+      setUser(userData);
+      setIsAuthenticated(true);
+      
+      return userData;
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.response?.data?.message || 'Error al iniciar sesión');
+      throw error;
+    } finally {
+      setLoading(false);
     }
-    return context
-}
+  };
 
-export const AuthProvider = ({children}) => {
-    const [user, setUser] = useState(null)
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
-    const [errors, setErrors] = useState([])
-    const [loading, setLoading] = useState(true)
-
-    const signup = async (user) => {
-        try {
-            const res = await registerRequest(user)
-            setUser(res.data)
-            setIsAuthenticated(true)
-        } catch (error) {
-            setErrors(error.response.data)
-        }
+  const register = async (userData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.post('/register', userData, {
+        withCredentials: true
+      });
+      
+      // Opcional: Iniciar sesión automáticamente después del registro
+      const { email, password } = userData;
+      if (email && password) {
+        return await login(email, password);
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error('Register error:', error);
+      setError(error.response?.data?.message || 'Error al registrarse');
+      throw error;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const signin = async (user) => {
-        try {
-            const res = await loginRequest(user);
-            setUser(res.data);
-            setIsAuthenticated(true);
-            // Asegúrate de que el token se guarda correctamente
-            localStorage.setItem('token', res.data.token);
-        } catch (error) {
-            console.log(error);
-            setErrors(error.response.data.message);
-        }
-    };
-
-    const logout = () => {
-        localStorage.removeItem('token')
-        Cookies.remove("token")
-        setIsAuthenticated(false)
-        setUser(null)
+  const logout = async () => {
+    try {
+      setLoading(true);
+      await axios.post('/logout', {}, {
+        withCredentials: true
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      setLoading(false);
     }
+  };
 
-    useEffect(() => {
-        const checkLogin = async () => {
-            const token = localStorage.getItem('token') || Cookies.get('token')
-            if (!token) {
-                setIsAuthenticated(false)
-                setLoading(false)
-                return
-            }
+  const checkAuth = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/verify', {
+        withCredentials: true
+      });
+      setUser(response.data.user);
+      setIsAuthenticated(true);
+    } catch (error) {
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            try {
-                const res = await verifyTokenRequest(token)
-                if (!res.data) {
-                    setIsAuthenticated(false)
-                    return
-                }
-                setIsAuthenticated(true)
-                setUser(res.data)
-            } catch (error) {
-                setIsAuthenticated(false)
-                setUser(null)
-            } finally {
-                setLoading(false)
-            }
-        }
-        checkLogin()
-    }, [])
+  const value = {
+    isAuthenticated,
+    user,
+    loading,
+    error,
+    login,
+    register,
+    logout,
+    checkAuth
+  };
 
-    useEffect(() => {
-        if(errors.length > 0){
-            const timer = setTimeout(() => {
-                setErrors([])
-            }, 5000)
-            return () => clearTimeout(timer)
-        }
-    }, [errors])
-
-    return (
-        <AuthContext.Provider value={{
-            signup,
-            signin,
-            logout,
-            loading,
-            user,
-            isAuthenticated,
-            errors
-        }}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

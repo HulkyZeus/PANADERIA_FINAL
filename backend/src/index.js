@@ -12,6 +12,7 @@ import eventosRoutes from "./routes/eventos.routes.js"
 import inventarioRoutes from "./routes/inventario.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import cors from "cors";
 
 
@@ -20,8 +21,16 @@ const app = express();
 // Configuración de CORS
 const allowedOrigins = [process.env.CLIENT_URL || "http://localhost:5173"];
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 //conexion a la base de datos
@@ -41,6 +50,7 @@ app.use("/api", eventosRoutes);
 app.use("/api", inventarioRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", productRoutes);
+app.use("/api/users", userRoutes);
 
 // Manejo de errores globales
 app.use((err, req, res, next) => {

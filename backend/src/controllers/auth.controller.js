@@ -35,8 +35,11 @@ export const register = async (req, res) => {
         // Configuración de la cookie
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // Solo en producción
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días en milisegundos
+            path: "/",
+            domain: process.env.NODE_ENV === "production" ? process.env.COOKIE_DOMAIN : "localhost"
         });
 
         res.json({
@@ -81,8 +84,11 @@ export const login = async (req, res) => {
         // Configuración de la cookie
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // Solo en producción
-            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días en milisegundos
+            path: "/",
+            domain: process.env.NODE_ENV === "production" ? process.env.COOKIE_DOMAIN : "localhost"
         });
 
         res.json({
@@ -111,31 +117,6 @@ export const logout = (req, res) => {
         expires: new Date(0),
     });
     return res.sendStatus(200);
-};
-
-/**
- * Perfil del usuario
- */
-export const profile = async (req, res) => {
-    try {
-        const userFound = await User.findById(req.user.id);
-
-        if (!userFound) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        return res.json({
-            id: userFound._id,
-            username: userFound.username,
-            email: userFound.email,
-            role: userFound.role,
-            createdAt: userFound.createdAt,
-            updatedAt: userFound.updatedAt,
-        });
-    } catch (error) {
-        console.error("Error al obtener el perfil:", error.message);
-        res.status(500).json({ message: "Internal server error" });
-    }
 };
 
 /**
