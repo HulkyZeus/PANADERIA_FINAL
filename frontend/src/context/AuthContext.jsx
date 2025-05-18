@@ -38,6 +38,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const register = async (userData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.post('/register', userData, {
+        withCredentials: true
+      });
+      
+      // Opcional: Iniciar sesión automáticamente después del registro
+      const { email, password } = userData;
+      if (email && password) {
+        return await login(email, password);
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error('Register error:', error);
+      setError(error.response?.data?.message || 'Error al registrarse');
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async () => {
     try {
       setLoading(true);
@@ -75,6 +99,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     login,
+    register,
     logout,
     checkAuth
   };
