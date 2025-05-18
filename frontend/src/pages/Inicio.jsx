@@ -1,5 +1,14 @@
-// src/pages/Inicio.js
-import { Carousel, Card, Col, Row, Rate, Form, Input, Button } from "antd";
+import {
+  Carousel,
+  Card,
+  Col,
+  Row,
+  Rate,
+  Form,
+  Input,
+  Button,
+  Select,
+} from "antd";
 import Imagen1 from "../img/PanAlinado.jpg";
 import Imagen2 from "../img/Pan3.jpg";
 import Imagen3 from "../img/Pan2.jpg";
@@ -16,8 +25,29 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
-
+import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
+import Swal from "sweetalert2";
+
+const CustomButton = styled(Button)`
+  background-color: #bb8f51 !important;
+  border-color: #bb8f51 important;
+  color: #fff;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &:hover {
+    background-color: #a0522d !important;
+    border-color: #a0522d !important;
+    color: #fff !important;
+  }
+`;
+
+const Imagen = styled.img`
+  height: 100%;
+  width: 100%;
+  display: block;
+`;
+
 const contentStyle = {
   height: "550px",
   color: "#fff",
@@ -26,31 +56,12 @@ const contentStyle = {
   background: "#364d79",
 };
 
-const Imagen = styled.img`
-  height: 100%;
-  width: 100%;
-  display: block;
-`;
-
 
 
 const Inicio = () => {
-  const {t} = useTranslation();
-
-  // Lista de productos de pastelería
-const products = [
-  { title: [t("Croissant")], img: Croissant },
-  { title: [t("Muffin de Chocolate")], img: Muffin },
-  { title: [t("Pan de Queso")], img: Pandequeso },
-  { title: [t("Tarta de Fresa")], img: Tartadefresa },
-  { title: [t("Dona de Vainilla")], img: Donadevainilla },
-  { title: [t("Brownie")], img: Brownie },
-  { title: [t("Tarta de Manzana")], img: Tartademanzana },
-  { title: [t("Cheesecake")], img: Cheesecake },
-];
-
-  const { user } = useAuth(); // Obtenemos el usuario logueado desde el contexto
-  const [formVisible, setFormVisible] = useState(false); // Estado para controlar la visibilidad del formulario
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [formVisible, setFormVisible] = useState(false);
   const [reviews, setReviews] = useState([
     {
       name: "María López",
@@ -68,137 +79,63 @@ const products = [
       description: t("Las tartas son increíbles, especialmente la de manzana."),
     },
   ]);
+  const [filteredReviews, setFilteredReviews] = useState(reviews);
   const [form] = Form.useForm();
 
-  const handleAddReview = async (values) => {
-    const newReview = {
-      name: user.name, // Usamos el nombre del usuario logueado
-      rating: values.rating,
-      description: values.description,
-    };
-    try {
-      // Enviar la reseña al backend
-      const response = await api.post("/reviews", newReview);
-      console.log("Reseña guardada:", response.data);
+  const products = [
+    { title: [t("Croissant")], img: Croissant },
+    { title: [t("Muffin de Chocolate")], img: Muffin },
+    { title: [t("Pan de Queso")], img: Pandequeso },
+    { title: [t("Tarta de Fresa")], img: Tartadefresa },
+    { title: [t("Dona de Vainilla")], img: Donadevainilla },
+    { title: [t("Brownie")], img: Brownie },
+    { title: [t("Tarta de Manzana")], img: Tartademanzana },
+    { title: [t("Cheesecake")], img: Cheesecake },
+  ];
 
-      // Actualizar el estado con la nueva reseña
-      setReviews([...reviews, newReview]);
-
-      // Limpiar el formulario y ocultarlo
-      form.resetFields();
-      setFormVisible(false);
-    } catch (error) {
-      console.error("Error al guardar la reseña:", error);
+  const handleAddReviewClick = () => {
+    if (user) {
+      setFormVisible(true); // Mostrar el formulario si el usuario está logueado
+    } else {
+      // Mostrar el modal de SweetAlert2 si el usuario no está logueado
+      Swal.fire({
+        title: t("Inicia sesión"),
+        text: t("Debes iniciar sesión para dejar una reseña."),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: t("Iniciar sesión"),
+        cancelButtonText: t("Cerrar"),
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirigir al usuario a la página de inicio de sesión
+          window.location.href = "/login";
+        }
+      });
     }
   };
 
-  return(
-  <div>
-    <Carousel autoplay>
-      <div>
-        <h3 style={contentStyle}>
-          <Imagen src={Imagen1}></Imagen>
-        </h3>
-      </div>
-      <div>
-        <h3 style={contentStyle}>
-          <Imagen src={Imagen2}></Imagen>
-        </h3>
-      </div>
-      <div>
-        <h3 style={contentStyle}>
-          <Imagen src={Imagen3}></Imagen>
-        </h3>
-      </div>
-      <div>
-        <h3 style={contentStyle}>
-          <Imagen src={Imagen4}></Imagen>
-        </h3>
-      </div>
-    </Carousel>
+  const handleFilterChange = (value) => {
+    if (value) {
+      setFilteredReviews(reviews.filter((review) => review.rating === value));
+    } else {
+      setFilteredReviews(reviews);
+    }
+  };
 
-    {/* Sección de tarjetas de productos */}
-    <div
-      style={{
-        padding: "30px",
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <h2 style={{ textAlign: "left", marginBottom: "30px" }}>
-        {t("Productos Destacados")}
-      </h2>
-      <Row gutter={[16, 16]} justify="center">
-        {products.slice(0, 4).map((product, index) => (
-          <Col span={4} key={index}>
-            <Card
-              hoverable
-              cover={<img alt={product.title} src={product.img} />}
-            >
-              <Card.Meta
-                title={product.title}
-                description={t("Delicioso y recién horneado")}
-              />
-            </Card>
-          </Col>
+  return (
+    <div>
+      {/* Carrusel */}
+      <Carousel autoplay>
+        {[Imagen1, Imagen2, Imagen3, Imagen4].map((img, index) => (
+          <div key={index}>
+            <h3 style={contentStyle}>
+              <Imagen src={img} alt={`Imagen ${index + 1}`} />
+            </h3>
+          </div>
         ))}
-      </Row>
-      <Row gutter={[16, 16]} justify="center" style={{ marginTop: "30px" }}>
-        {products.slice(4, 8).map((product, index) => (
-          <Col span={4} key={index}>
-            <Card
-              hoverable
-              cover={<img alt={product.title} src={product.img} />}
-            >
-              <Card.Meta
-                title={product.title}
-                description={t("Delicioso y recién horneado")}
-              />
-            </Card>
-          </Col>
-        ))}
-      </Row>
-    </div>
-    
- {/* Sección de reseñas */}
- <div
-        style={{
-          padding: "30px",
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <h2 style={{ textAlign: "left", marginBottom: "30px" }}>
-          {t("Reseñas de nuestros clientes")}
-        </h2>
-        <Row gutter={[16, 16]} justify="center">
-          {reviews.map((review, index) => (
-            <Col span={6} key={index}>
-              <Card>
-                <Card.Meta
-                  title={
-                    <div>
-                      <strong>{review.name}</strong>
-                      <Rate
-                        disabled
-                        defaultValue={review.rating}
-                        style={{ marginLeft: "10px" }}
-                      />
-                    </div>
-                  }
-                  description={review.description}
-                />
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
+      </Carousel>
 
-      {/* Botón para mostrar el formulario */}
+      {/* Productos destacados */}
       <div
         style={{
           padding: "30px",
@@ -208,48 +145,154 @@ const products = [
           alignItems: "center",
         }}
       >
-        {!formVisible && (
-          <Button type="primary" onClick={() => setFormVisible(true)}>
-            {t("Danos tu opinión")}
-          </Button>
-        )}
+        <h2 style={{ textAlign: "left", marginBottom: "30px" }}>
+          {t("Productos Destacados")}
+        </h2>
+        <Row gutter={[16, 16]} justify="center">
+          {products.slice(0, 4).map((product, index) => (
+            <Col span={4} key={index}>
+              <Card
+                hoverable
+                cover={<img alt={product.title} src={product.img} />}
+              >
+                <Card.Meta
+                  title={product.title}
+                  description={t("Delicioso y recién horneado")}
+                />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+        <Row gutter={[16, 16]} justify="center" style={{ marginTop: "30px" }}>
+          {products.slice(4, 8).map((product, index) => (
+            <Col span={4} key={index}>
+              <Card
+                hoverable
+                cover={<img alt={product.title} src={product.img} />}
+              >
+                <Card.Meta
+                  title={product.title}
+                  description={t("Delicioso y recién horneado")}
+                />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
+
+      {/* Filtros */}
+      <div
+        style={{
+          padding: "30px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h2 style={{ textAlign: "left", marginBottom: "30px"}}>
+          {t("Reseñas de nuestros clientes")}
+          </h2>
+        <Select
+          placeholder={t("Filtrar por puntuación")}
+          style={{ width: 200 }}
+          onChange={handleFilterChange}
+          allowClear
+        >
+          <Select.Option value={5}>{t("Todas")}</Select.Option>
+          <Select.Option value={5}>{t("5 estrellas")}</Select.Option>
+          <Select.Option value={4}>{t("4 estrellas")}</Select.Option>
+          <Select.Option value={3}>{t("3 estrellas")}</Select.Option>
+          <Select.Option value={2}>{t("2 estrellas")}</Select.Option>
+          <Select.Option value={1}>{t("1 estrella")}</Select.Option>
+        </Select>
+      </div>
+
+      {/* Reseñas */}
+      <div
+        style={{
+          padding: "50px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Row gutter={[16, 16]} justify="center">
+          {filteredReviews.map((review, index) => (
+            <Col span={8} key={index}>
+              <Card
+                style={{
+                  borderRadius: "10px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  minHeight: "150px",
+                  minWidth: "250px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between"
+                }}
+              >
+                <Card.Meta
+                  title={
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <strong>{review.name}</strong>
+                      <Rate
+                        disabled
+                        defaultValue={review.rating}
+                        style={{ marginLeft: "10px", fontSize: "14px" }}
+                      />
+                    </div>
+                  }
+                  description={review.description}
+                />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      
 
         {/* Formulario para agregar reseñas */}
-        {formVisible && (
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleAddReview}
-            style={{ maxWidth: "600px", width: "100%", marginTop: "20px" }}
-          >
-            <Form.Item
-              label={t("Puntuación")}
-              name="rating"
-              rules={[
-                { required: true, message: t("Por favor selecciona una puntuación") },
-              ]}
+        {/* Botón para agregar reseñas */}
+        <div style={{ marginTop: "30px", textAlign: "center" }}>
+          <CustomButton onClick={handleAddReviewClick}>
+            {t("Danos tu opinión")}
+          </CustomButton>
+
+          {/* Formulario para usuarios logueados */}
+          {user && formVisible && (
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleAddReview}
+              style={{ maxWidth: "600px", margin: "20px auto" }}
             >
-              <Rate />
-            </Form.Item>
-            <Form.Item
-              label={t("Descripción")}
-              name="description"
-              rules={[
-                { required: true, message: t("Por favor escribe una descripción") },
-              ]}
-            >
-              <Input.TextArea rows={4} />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                {t("Enviar reseña")}
-              </Button>
-            </Form.Item>
-          </Form>
-        )}
+              <Form.Item
+                label={t("Puntuación")}
+                name="rating"
+                rules={[
+                  { required: true, message: t("Por favor selecciona una puntuación") },
+                ]}
+              >
+                <Rate />
+              </Form.Item>
+              <Form.Item
+                label={t("Descripción")}
+                name="description"
+                rules={[
+                  { required: true, message: t("Por favor escribe una descripción") },
+                ]}
+              >
+                <Input.TextArea rows={4} />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  {t("Enviar reseña")}
+                </Button>
+              </Form.Item>
+            </Form>
+          )}
+        </div>
       </div>
-  </div>
-  )
+    </div>
+  );
 };
 
 export default Inicio;
