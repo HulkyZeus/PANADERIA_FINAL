@@ -5,6 +5,11 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import axios from "../api/axios";
 import FondoPan from '../img/FondoPan.webp'
+import { useEffect } from "react";
+import axios from "../api/axios";
+import FondoPan from '../img/FondoPan.webp'
+
+
 
 const cajaDecoracion = {
   display: 'flex',
@@ -65,17 +70,27 @@ const Panaderia = () => {
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
-  };
+
+  useEffect(() => {
+    // Traer productos de la categoría "Panadería"
+
+    const fetchPanaderia = async () => {
+      try {
+        const response = await getProductsByCategory("panaderia");
+        setProducts(response.data);
+        setQuantities(Array(response.data.length).fill(0));
+        setIsFlipped(Array(response.data.length).fill(false));
+      } catch (error) {
+        //Manejo de error
+      }
+    };
+    fetchPanaderia();
+  }, []);
 
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
     const newQuantities = [...quantities];
+    newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     setQuantities(newQuantities);
   };
@@ -90,9 +105,18 @@ const Panaderia = () => {
     }
   };
 
+  const handleCardClick = (index) => {
+    setIsFlipped((prevFlipped) => {
+      const newFlipped = [...prevFlipped];
+      newFlipped[index] = !newFlipped[index];
+      return newFlipped;
+    });
+  };
+
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
+
 
   const fetchProducts = async () => {
     try {
@@ -131,13 +155,15 @@ const Panaderia = () => {
             </Col>
           </Row>
           {Array.from({ length: Math.ceil(products.length / 4) }, (_, i) => (
-            <Row key={i} gutter={[16, 16]} justify-content="center" style={{ margin:'30px 200px ' }}>
+            <Row key={i} gutter={[16, 16]} justify="center" style={{ margin: "30px 200px" }}>
               {products.slice(i * 4, (i + 1) * 4).map((product, index) => (
+
                 <Col key={product._id || product.id} span={6}>
+
                   <div
                     className={`custom-card ${isFlipped[i * 4 + index] ? "flipped" : ""}`}
                     onClick={() => handleCardClick(i * 4 + index)}
-                    style={{ marginBottom: '20px' }}
+                    style={{ marginBottom: "20px" }}
                   >
                     <div className="card-inner">
                       <div className="card-front">
@@ -146,14 +172,16 @@ const Panaderia = () => {
                             <img src={product.imageUrl} alt={product.name} className="card-image" />
                           </div>
                         </div>
-                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.name}</h3>
+                        <h3 style={{ padding: "15px", fontWeight: 900 }}>{product.name}</h3>
                       </div>
                       <div className="card-back">
                         <div className="background-image" style={{ backgroundImage: `url(${product.imageUrl})` }} />
                         <div className="card-content">
                           <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
+
                           <p><strong>${isNaN(product.price) ? "0" : product.price}</strong></p>
+
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -207,8 +235,10 @@ const Panaderia = () => {
               <div key={index} className="carrito-item" style={{ display: "flex", marginBottom: "15px" }}>
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
+
                   <h3>{item.name}</h3>
                   <p>{`Precio: $${isNaN(item.price) ? "0" : item.price}`}</p>
+
                   <p>{`Cantidad: ${item.quantity}`}</p>
                 </div>
               </div>
@@ -220,5 +250,4 @@ const Panaderia = () => {
     </Layout>
   );
 };
-
 export default Panaderia;

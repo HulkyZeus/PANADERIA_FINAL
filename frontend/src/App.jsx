@@ -29,6 +29,7 @@ import Resenas from "./pages/Resenas";
 import FormularioEvento from "./pages/FormularioEvento.jsx";
 import AdminEventos from "./pages/admin/AdminEventos.jsx";
 import RealizarPedido from "./pages/RealizarPedido.jsx";
+import AdminEventos from './pages/admin/AdminEventos';
 
 
 function App() {
