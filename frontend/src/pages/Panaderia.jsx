@@ -2,6 +2,7 @@ import "../css/main.css";
 import { Layout, Row, Col, Modal, Button } from "antd";
 import { useState } from "react";
 import { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import axios from "../api/axios";
@@ -9,6 +10,7 @@ import FondoPan from '../img/FondoPan.webp'
 import { useEffect } from "react";
 import axios from "../api/axios";
 import FondoPan from '../img/FondoPan.webp'
+
 
 
 const cajaDecoracion = {
@@ -70,14 +72,6 @@ const Panaderia = () => {
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
-  };
-
 
   useEffect(() => {
     // Traer productos de la categoría "Panadería"
@@ -100,7 +94,6 @@ const Panaderia = () => {
     const newQuantities = [...quantities];
     newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
-    newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     setQuantities(newQuantities);
   };
 
@@ -112,16 +105,28 @@ const Panaderia = () => {
       setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
       setIsModalVisible(true); 
     }
-      setCart((prevCart) => [...prevCart, newItem]);// Agrega el producto al carrito
-      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
-      setIsModalVisible(true); 
-    }
   };
 
+  const handleCardClick = (index) => {
+    setIsFlipped((prevFlipped) => {
+      const newFlipped = [...prevFlipped];
+      newFlipped[index] = !newFlipped[index];
+      return newFlipped;
+    });
+  };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
+    return <p style={{ textAlign: 'center', marginTop: '50px' }}>{t("Cargando productos...")}</p>;
+  }
+
 
   useEffect(() => {
     fetchProducts();
@@ -182,7 +187,8 @@ const Panaderia = () => {
                         <div className="card-content">
                           <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
-                          <p><strong>${isNaN(product.price) ? "0" : product.price}</strong></p>
+                          <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
+                          <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -215,8 +221,39 @@ const Panaderia = () => {
             </Row>
           ))}
         </div>
+        {/* Modal para mostrar el carrito */}
+      <Modal
+        title="Tu Carrito"
+        open={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={[
+          <Button key="back" onClick={handleCloseModal}>
+            {t("Cerrar")}
+          </Button>,
+        ]}
+        width={500}
+        style={{ top: 20 }}
+      >
+        {cart.length === 0 ? (
+          <p>{t("El carrito está vacío.")}</p>
+        ) : (
+          <div>
+            {cart.map((item, index) => (
+              <div key={index} className="carrito-item" style={{ display: "flex", marginBottom: "15px" }}>
+                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
+                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
+                  <p>{`Cantidad: ${item.quantity}`}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Modal>
       </Content>
     </Layout>
   );
-
+};
 export default Panaderia;
