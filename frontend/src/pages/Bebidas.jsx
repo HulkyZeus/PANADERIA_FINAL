@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout, Row, Col, Button, Modal } from 'antd';
+import { Layout, Row, Col, Button, Modal, message } from 'antd';
 import Naranja from '../img/Naranja.webp';
 import Zanahoria from '../img/Zanahoria.webp';
 import Verde from '../img/Verde.webp';
@@ -98,10 +98,25 @@ const Bebidas = () => {
   const addToCartHandler = (index, event) => {
     event.stopPropagation();
     if (quantities[index] > 0) {
-      const newItem = { ...products[index], quantity: quantities[index] };
-      setCart((prevCart) => [...prevCart, newItem]);
+      const newItem = { 
+        name: products[index].title[0],
+        price: products[index].price,
+        quantity: quantities[index],
+        image: products[index].img
+      };
+      
+      // Obtener el carrito actual del localStorage
+      const currentCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      // Agregar el nuevo item
+      currentCart.push(newItem);
+      // Guardar el carrito actualizado
+      localStorage.setItem('cart', JSON.stringify(currentCart));
+      
+      // Resetear la cantidad
       setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]);
-      setIsModalVisible(true);  // Mostrar modal del carrito al agregar un producto
+      
+      // Mostrar mensaje de éxito
+      message.success('Producto agregado al carrito');
     }
   };
 

@@ -8,6 +8,7 @@ import {
   BarChartOutlined,
   ShoppingOutlined,
   LogoutOutlined,
+  ShoppingCartOutlined,
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -34,6 +35,9 @@ const Sidebar = () => {
         </Menu.Item>
         <Menu.Item key="products" icon={<ShoppingOutlined />}>
           <Link to="/admin/products">Productos</Link>
+        </Menu.Item>
+        <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
+          <Link to="/admin/orders">Pedidos</Link>
         </Menu.Item>
         <Menu.Item key="settings" icon={<SettingOutlined />}>
           <Link to="/admin/settings">Configuración</Link>
