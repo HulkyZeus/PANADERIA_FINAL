@@ -8,6 +8,7 @@ import {
   Input,
   Button,
   Select,
+  message,
 } from "antd";
 import Imagen1 from "../img/PanAlinado.jpg";
 import Imagen2 from "../img/Pan3.jpg";
@@ -65,6 +66,7 @@ const Inicio = () => {
   const [reviews, setReviews] = useState([]);// Inicialmente vacío
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [form] = Form.useForm();
+  const [formKey, setFormKey] = useState(0); // Estado para forzar el reinicio del formulario
 
   // Función para obtener todas las reseñas desde la API
   const fetchReviews = async () => {
@@ -153,7 +155,8 @@ const Inicio = () => {
       setReviews((prev) => [...prev, newReview]);
       setFilteredReviews((prev) => [...prev, newReview]); // Actualizar también las reseñas filtradas
       message.success("¡Reseña publicada!");
-      form.resetFields(); // Limpiar el formulario
+      
+      setFormKey((prevKey) => prevKey + 1); // Cambiar la clave del formulario para reiniciarlo
       setFormVisible(false); // Ocultar el formulario
     } catch (error) {
       console.error("Error al agregar la reseña:", error);
