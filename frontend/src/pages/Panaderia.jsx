@@ -1,9 +1,11 @@
 import "../css/main.css";
 import { Layout, Row, Col, Modal, Button } from "antd";
-import { useState, useEffect } from "react";
-import FondoPan from '../img/FondoPan.webp'
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getProductsByCategory } from "../api/products";
+import { useEffect } from "react";
+import axios from "../api/axios";
+import FondoPan from '../img/FondoPan.webp'
+
 
 const cajaDecoracion = {
   display: 'flex',
@@ -58,10 +60,11 @@ const { Content } = Layout;
 const Panaderia = () => {
   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [quantities, setQuantities] = useState([]);
+  const [isFlipped, setIsFlipped] = useState(Array(products.length).fill(false));
+  const [quantities, setQuantities] = useState(Array(products.length).fill(0));
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isFlipped, setIsFlipped] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
@@ -83,7 +86,7 @@ const Panaderia = () => {
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
     const newQuantities = [...quantities];
-    newQuantities[index] = Math.max(newQuantities[index] + change, 0);
+    newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     setQuantities(newQuantities);
   };
 
@@ -91,9 +94,9 @@ const Panaderia = () => {
     event.stopPropagation();
     if (quantities[index] > 0) {
       const newItem = { ...products[index], quantity: quantities[index] };
-      setCart((prevCart) => [...prevCart, newItem]);
-      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]);
-      setIsModalVisible(true);  // Mostrar modal del carrito al agregar un producto
+      setCart((prevCart) => [...prevCart, newItem]);// Agrega el producto al carrito
+      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
+      setIsModalVisible(true); 
     }
   };
 
@@ -108,6 +111,29 @@ const Panaderia = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
+
+  const fetchProducts = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get("/products");
+      const filteredProducts = response.data.filter(product => product.category.toLowerCase === "panes");
+      setProducts(filteredProducts);
+      setQuantities(Array(response.data.length).fill(0));// Inicializa las cantidades en 0
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+    }finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
+    return <p style={{ textAlign: 'center', marginTop: '50px' }}>{t("Cargando productos...")}</p>;
+  }
+
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -144,7 +170,7 @@ const Panaderia = () => {
                         <div className="card-content">
                           <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
-                          <p><strong>${product.price}</strong></p>
+                          <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -198,8 +224,8 @@ const Panaderia = () => {
               <div key={index} className="carrito-item" style={{ display: "flex", marginBottom: "15px" }}>
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
-                  <h3>{item.name}</h3>
-                  <p>{`Precio: $${item.price}`}</p>
+                  <h3>{item.title}</h3>
+                  <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
                 </div>
               </div>
