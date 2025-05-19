@@ -2,27 +2,38 @@
 import mongoose from "mongoose";
 
 const pedidoSchema = new mongoose.Schema({
-  usuario_id: {
+  cliente_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Usuario",
-    required: true,
+    ref: "Cliente",
+    required: true
   },
-  productos: {
+  metodo_pago: {
     type: String,
     required: true,
+    enum: ['PSE', 'Tarjeta', 'Efectivo']
   },
+  productos: [{
+    name: String,
+    price: Number,
+    quantity: Number,
+    image: String
+  }],
   total: {
     type: Number,
-    required: true,
+    required: true
   },
   estado: {
     type: String,
     required: true,
+    enum: ['pendiente', 'en_proceso', 'completado', 'cancelado'],
+    default: 'pendiente'
   },
   fecha: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
+}, {
+  timestamps: true
 });
 
 export default mongoose.model("Pedido", pedidoSchema);

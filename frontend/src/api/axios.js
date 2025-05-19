@@ -20,16 +20,20 @@ instance.interceptors.request.use(
         return config;
     },
     (error) => {
+        console.error('Request error:', error);
         return Promise.reject(error);
     }
 );
 
-// Interceptor para manejar errores de autenticación
+// Interceptor para manejar errores de autenticación y logging
 instance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        console.log('Response:', response.config.url, response.data);
+        return response;
+    },
     (error) => {
+        console.error('Response error:', error.config?.url, error.response?.data);
         if (error.response?.status === 401) {
-            // Limpiar el token y redirigir al login
             localStorage.removeItem('token');
             Cookies.remove('token');
             window.location.href = '/login';

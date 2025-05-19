@@ -8,6 +8,7 @@ import {
   BarChartOutlined,
   ShoppingOutlined,
   LogoutOutlined,
+  ShoppingCartOutlined,
   CalendarOutlined, // <-- Agregado
 } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -38,6 +39,9 @@ const Sidebar = () => {
         </Menu.Item>
         <Menu.Item key="events" icon={<CalendarOutlined />}>
           <Link to="/admin/events">Eventos</Link>
+        </Menu.Item>
+        <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
+          <Link to="/admin/orders">Pedidos</Link>
         </Menu.Item>
         <Menu.Item key="settings" icon={<SettingOutlined />}>
           <Link to="/admin/settings">Configuración</Link>
