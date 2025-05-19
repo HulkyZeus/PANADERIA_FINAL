@@ -230,7 +230,7 @@ const AdminEventos = () => {
       {/* Modal de edición */}
       <Modal
         title="Editar Evento"
-        visible={editModalVisible}
+        open={editModalVisible}
         onCancel={handleEditModalCancel}
         onOk={() => form.submit()}
         okText="Guardar"

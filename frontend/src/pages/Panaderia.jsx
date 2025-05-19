@@ -5,9 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import axios from "../api/axios";
 import FondoPan from '../img/FondoPan.webp'
-import { useEffect } from "react";
-import axios from "../api/axios";
-import FondoPan from '../img/FondoPan.webp'
+
 
 
 
@@ -217,7 +215,7 @@ const Panaderia = () => {
         {/* Modal para mostrar el carrito */}
       <Modal
         title="Tu Carrito"
-        open={isModalVisible}
+        open={isModalOpen}
         onCancel={handleCloseModal}
         footer={[
           <Button key="back" onClick={handleCloseModal}>

@@ -178,7 +178,7 @@ const Pasteleria = () => {
         {/* Modal para mostrar el carrito */}
       <Modal
         title="Tu Carrito"
-        open={isModalVisible}
+        open={isModalOpen}
         onCancel={handleCloseModal}
         footer={[
           <Button key="back" onClick={handleCloseModal}>
