@@ -9,11 +9,13 @@ export const authRequired = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({ message: 'No token provided' });
     }
-
+    //Verificar el token
     const decoded = jwt.verify(token, TOKEN_SECRET);
     
+    //Buscar el usuario en la base de datos
     const user = await User.findById(decoded.id);
     if (!user) {
+      console.error('Usuario con ID ${decoded.id} no encontrado');
       return res.status(401).json({ message: 'User not found' });
     }
 
@@ -28,11 +30,11 @@ export const authRequired = async (req, res, next) => {
   } catch (error) {
     console.error('Error en authRequired:', error.message);
     if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: 'Invalid token' });
+      return res.status(401).json({ message: 'Invalid token', details: error.message });
     }
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ message: 'Token expired' });
+      return res.status(401).json({ message: 'Token expired', details: error.message });
     }
-    return res.status(401).json({ message: 'Authentication failed' });
+    return res.status(401).json({ message: 'Authentication failed', details: error.message });
   }
 };

@@ -42,6 +42,7 @@ const Sidebar = () => {
         </Menu.Item>
         <Menu.Item key="reviews" icon={<CalendarOutlined />}>
           <Link to="/admin/reviews">Reseñas</Link>
+        </Menu.Item>
         <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
           <Link to="/admin/orders">Pedidos</Link>
         </Menu.Item>

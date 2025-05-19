@@ -1,161 +1,164 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Space, Button, message, Modal, Form, Input, Rate } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "../../api/axios";
+import { Table, Button, Space, Typography, Popconfirm, message, Modal, Form, Input, Rate } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import "antd/dist/reset.css";
+
+const { Title } = Typography;
+const { TextArea } = Input;
 
 const AdminReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editingReview, setEditingReview] = useState(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editReview, setEditReview] = useState(null);
   const [form] = Form.useForm();
 
-  const API_REVIEWS = "http://localhost:4000/api/reviews"; // Cambia según tu endpoint
+  const API_URL = "http://localhost:4000/api/reviews";
 
   useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await axios.get(API_URL, {
+          withCredentials: true, // Asegura que las cookies se envíen
+        });
+        setReviews(res.data);
+      } catch (error) {
+        message.error("Error al cargar las reseñas");
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchReviews();
   }, []);
 
-  // Fetch de reseñas
-  const fetchReviews = async () => {
+  const handleEliminar = async (id) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        message.error("No se encontró el token de autenticación");
-        return;
-      }
-      const response = await axios.get(API_REVIEWS, {
-        headers: { Authorization: `Bearer ${token}` },
+      await axios.delete(`${API_URL}/${id}`, {
+        withCredentials: true,
       });
-      setReviews(response.data);
-      setLoading(false);
+      setReviews(reviews.filter((r) => r._id !== id));
+      message.success("Reseña eliminada");
     } catch (error) {
-      console.error("Error al cargar las reseñas:", error);
-      message.error("Error al cargar las reseñas");
-      setLoading(false);
-    }
-  };
-
-  // Editar reseña
-  const handleEdit = (review) => {
-    setEditingReview(review);
-    form.setFieldsValue({
-      usuario: review.usuario?.username || "N/A",
-      comentario: review.comentario,
-      calificacion: review.calificacion,
-    });
-    setIsModalVisible(true);
-  };
-
-  const handleDelete = async (review) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`${API_REVIEWS}/${review._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setReviews(reviews.filter((r) => r._id !== review._id));
-      message.success("Reseña eliminada correctamente");
-    } catch (error) {
-      console.error("Error al eliminar la reseña:", error);
       message.error("Error al eliminar la reseña");
     }
   };
 
-  const handleModalOk = async () => {
+  const handleEditar = (review) => {
+    setEditReview(review);
+    setEditModalVisible(true);
+    form.setFieldsValue({
+      usuario: review.usuario?.username || "N/A",
+      comentario: review.description,
+      calificacion: review.rating,
+    });
+  };
+
+  const handleEditModalCancel = () => {
+    setEditModalVisible(false);
+    setEditReview(null);
+    form.resetFields();
+  };
+
+  const handleEditSubmit = async (values) => {
     try {
-      const values = await form.validateFields();
-      const token = localStorage.getItem("token");
-      await axios.put(`${API_REVIEWS}/${editingReview._id}`, values, {
-        headers: { Authorization: `Bearer ${token}` },
+      const reviewData = {
+        ...values,
+      };
+      await axios.put(`${API_URL}/${editReview._id}`, reviewData, {
+        withCredentials: true,
       });
-      setReviews(
-        reviews.map((r) =>
-          r._id === editingReview._id ? { ...r, ...values } : r
-        )
-      );
-      message.success("Reseña actualizada correctamente");
-      setIsModalVisible(false);
-      setEditingReview(null);
+      setReviews(reviews.map((r) =>
+        r._id === editReview._id
+          ? { ...r, ...reviewData }
+          : r
+      ));
+      message.success("Reseña actualizada");
+      setEditModalVisible(false);
+      setEditReview(null);
       form.resetFields();
     } catch (error) {
-      console.error("Error al actualizar la reseña:", error);
       message.error("Error al actualizar la reseña");
     }
   };
 
-  const handleModalCancel = () => {
-    setIsModalVisible(false);
-    setEditingReview(null);
-    form.resetFields();
-  };
-
   const columns = [
     {
-      title: 'Usuario',
-      dataIndex: ['usuario', 'username'],
-      key: 'usuario',
-      render: (text) => text || "N/A",
+        title: "Email",
+        dataIndex: ["usuario_id", "email"], // Agrega una columna para el email
+        key: "email",
+        render: (text, record) => record.usuario_id?.email || "N/A",
     },
     {
-      title: 'Comentario',
-      dataIndex: 'comentario',
-      key: 'comentario',
+      title: "Comentario",
+      dataIndex: "description",
+      key: "comentario",
     },
     {
-      title: 'Calificación',
-      dataIndex: 'calificacion',
-      key: 'calificacion',
-      render: (calificacion) => <Rate disabled defaultValue={calificacion} />,
+      title: "Calificación",
+      dataIndex: "rating",
+      key: "calificacion",
+      render: (rating) => <Rate disabled defaultValue={rating} />,
     },
     {
-      title: 'Acciones',
-      key: 'actions',
+      title: "Acciones",
+      key: "acciones",
       render: (_, record) => (
-        <Space size="middle">
+        <Space>
           <Button
-            type="primary"
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ backgroundColor: '#fff', color: '#612c1d', border: '1px solid #612c1d' }}
+            onClick={() => handleEditar(record)}
+            style={{ borderColor: "#6b4f1d", color: "#6b4f1d" }}
           >
             Editar
           </Button>
-          <Button
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
+          <Popconfirm
+            title="¿Seguro que deseas eliminar esta reseña?"
+            onConfirm={() => handleEliminar(record._id)}
+            okText="Sí"
+            cancelText="No"
           >
-            Eliminar
-          </Button>
+            <Button
+              icon={<DeleteOutlined />}
+              danger
+              style={{ borderColor: "#ff7875", color: "#ff7875" }}
+            >
+              Eliminar
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },
   ];
 
   return (
-    <div>
-      <h2>Gestión de Reseñas</h2>
+    <div style={{ padding: 24 }}>
+      <Title level={3}>Gestión de Reseñas</Title>
       <Table
         columns={columns}
         dataSource={reviews}
         rowKey="_id"
         loading={loading}
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showTotal: (total) => `Total ${total} reseñas`,
-        }}
+        pagination={false}
+        bordered
+        style={{ background: "#fff", borderRadius: 8, marginTop: 16 }}
+        locale={{ emptyText: "No hay reseñas" }}
       />
 
+      {/* Modal de edición */}
       <Modal
         title="Editar Reseña"
-        open={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
+        open={editModalVisible}
+        onCancel={handleEditModalCancel}
+        onOk={() => form.submit()}
+        okText="Guardar"
+        cancelText="Cancelar"
+        width={600}
       >
         <Form
           form={form}
           layout="vertical"
+          onFinish={handleEditSubmit}
         >
           <Form.Item
             name="usuario"
@@ -166,14 +169,14 @@ const AdminReviews = () => {
           <Form.Item
             name="comentario"
             label="Comentario"
-            rules={[{ required: true, message: 'Por favor ingrese el comentario' }]}
+            rules={[{ required: true, message: "Por favor ingrese el comentario" }]}
           >
-            <Input.TextArea rows={3} />
+            <TextArea rows={3} />
           </Form.Item>
           <Form.Item
             name="calificacion"
             label="Calificación"
-            rules={[{ required: true, message: 'Por favor ingrese la calificación' }]}
+            rules={[{ required: true, message: "Por favor ingrese la calificación" }]}
           >
             <Rate />
           </Form.Item>
