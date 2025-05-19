@@ -1,5 +1,5 @@
 import "../css/main.css";
-import { Layout, Row, Col, Modal, Button } from "antd";
+import { Layout, Row, Col, Modal, Button, message } from "antd";
 import { useState, useEffect } from "react";
 import FondoPas from '../img/FondoPas.webp'
 import { useTranslation } from "react-i18next";
@@ -51,8 +51,6 @@ const contenido = {
 
 const { Content } = Layout;
 
-
-
 const Pasteleria = () => {
   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
@@ -85,19 +83,32 @@ const Pasteleria = () => {
   const addToCartHandler = (index, event) => {
     event.stopPropagation();
     if (quantities[index] > 0) {
-      const newItem = { ...products[index], quantity: quantities[index] };
-      setCart((prevCart) => [...prevCart, newItem]);
+      const newItem = { 
+        name: products[index].name,
+        price: products[index].price,
+        quantity: quantities[index],
+        image: products[index].imageUrl
+      };
+      
+      // Obtener el carrito actual del localStorage
+      const currentCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      // Agregar el nuevo item
+      currentCart.push(newItem);
+      // Guardar el carrito actualizado
+      localStorage.setItem('cart', JSON.stringify(currentCart));
+      
+      // Resetear la cantidad
       setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]);
-      setIsModalVisible(true); 
+      
+      // Mostrar mensaje de éxito
+      message.success('Producto agregado al carrito');
     }
   };
 
   const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
+    const newIsFlipped = [...isFlipped];
+    newIsFlipped[index] = !newIsFlipped[index];
+    setIsFlipped(newIsFlipped);
   };
 
   const handleCloseModal = () => {
@@ -175,36 +186,6 @@ const Pasteleria = () => {
             </Row>
           ))}
         </div>
-        {/* Modal para mostrar el carrito */}
-      <Modal
-        title="Tu Carrito"
-        open={isModalOpen}
-        onCancel={handleCloseModal}
-        footer={[
-          <Button key="back" onClick={handleCloseModal}>
-            {t("Cerrar")}
-          </Button>,
-        ]}
-        width={500}
-        style={{ top: 20 }}
-      >
-        {cart.length === 0 ? (
-          <p>{t("El carrito está vacío.")}</p>
-        ) : (
-          <div>
-            {cart.map((item, index) => (
-              <div key={index} className="carrito-item" style={{ display: "flex", marginBottom: "15px" }}>
-                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
-                <div>
-                  <h3>{item.name}</h3>
-                  <p>{`Precio: $${item.price}`}</p>
-                  <p>{`Cantidad: ${item.quantity}`}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Modal>
       </Content>
     </Layout>
   );

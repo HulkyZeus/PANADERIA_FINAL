@@ -17,14 +17,14 @@ export const authRequired = async (req, res, next) => {
       return res.status(401).json({ message: 'User not found' });
     }
 
-    // Solo establecer req.user - NO hacer next() aquí
+    // Establecer req.user con el rol del token
     req.user = {
       id: user._id,
-      role: user.role,
+      role: decoded.role || user.role, // Usar el rol del token o el del usuario
       email: user.email
     };
 
-    next(); // Pasar al siguiente middleware
+    next();
   } catch (error) {
     console.error('Error en authRequired:', error.message);
     if (error.name === 'JsonWebTokenError') {

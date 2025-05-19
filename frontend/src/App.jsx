@@ -25,11 +25,14 @@ import UserDashboard from "./pages/UserDashboard.jsx";
 import AdminDashboard from './pages/AdminDashboard';
 import AdminCustomers from './pages/AdminCustomers';
 import AdminProductos from './pages/admin/AdminProductos';
+import AdminOrders from './pages/admin/AdminOrders';
 import Resenas from "./pages/Resenas";
 import FormularioEvento from "./pages/FormularioEvento.jsx";
 import AdminEventos from "./pages/admin/AdminEventos.jsx";
 import RealizarPedido from "./pages/RealizarPedido.jsx";
 import AdminReviews from "./pages/admin/AdminReviews.jsx";
+import PedidoConfirmado from "./pages/PedidoConfirmado.jsx";
+
 
 
 function App() {
@@ -59,6 +62,7 @@ function App() {
             <Route path="/FormularioEvento" element={<FormularioEvento />} />
             <Route path="/Resenas" element={<Resenas />} />
             <Route path="/RealizarPedido" element={<RealizarPedido />} />
+            <Route path="/pedido-confirmado" element={<PedidoConfirmado />} />
 
             {/* Rutas protegidas por autenticación */}
             <Route element={<ProtectedRoute />}>
@@ -73,6 +77,7 @@ function App() {
                 <Route path='/admin' element={<AdminDashboard />}>
                   <Route path='customers' element={<AdminCustomers />} />
                   <Route path='products' element={<AdminProductos />} />
+                  <Route path='orders' element={<AdminOrders />} />
                   <Route path='events' element={<AdminEventos />} />
                   <Route path='reviews' element={<AdminReviews />} />
                 </Route>
