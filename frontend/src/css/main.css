@@ -622,3 +622,235 @@ a:hover{
 .admin-sidebar .ant-menu-item{
   color: #612c1d !important; 
 }
+
+/* Realizar Pedido */
+/* General */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #fdf5e6; /* Fondo claro */
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Contenedor principal */
+.realizarPedido-contenedor {
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 000;
+}
+
+/* Formulario */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+form label {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+form input:focus,
+form textarea:focus {
+  border-color: #1890ff;
+  outline: none;
+}
+
+
+form button {
+  background-color: #d2691e; /* Color principal */
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+form button:hover {
+  background-color: #a0522d; /* Color más oscuro para hover */
+}
+
+/* Tabla del resumen del pedido */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table thead {
+  background-color:#bb8f51;
+  color: #fff;
+}
+
+table th,
+table td {
+  padding: 15px;
+  text-align: left;
+}
+
+table th {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+table td img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tbody tr:hover {
+  background-color: #f5e8dc;
+}
+
+/* Total del carrito */
+.realizarPedido-carritoTotal {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.realizarPedido-carritoTotal .totalLabel {
+  color: rgba(114, 93, 66, 1);
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.realizarPedido-carritoTotal .total-precio {
+  color: rgba(114, 93, 66, 1); /* Color principal */
+  font-weight: bold;
+  font-size: 20px;
+}
+
+/* Botón de acción */
+.realizarPedido-boton {
+  background-color: #d2691e; /* Color principal */
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.realizarPedido-boton:hover {
+  background-color: #a0522d; /* Color más oscuro para hover */
+}
+
+/* Imágenes en la tabla */
+.realizarPedido-imagen {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+/* Espaciado adicional */
+.realizarPedido-row {
+  margin-bottom: 30px;
+}
+
+.realizarPedido-titulo {
+  margin-bottom: 20px;
+  background-color: rgba(114, 93, 66, 1); /* Fondo con el color principal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+  display: flex; /* Flexbox para centrar contenido */
+  align-items: center; /* Centrar verticalmente */
+  justify-content: center; /* Centrar horizontalmente */
+  padding: 15px; /* Espaciado interno */
+  padding-top: 30px;
+  border-radius: 20px; /* Bordes redondeados */
+  color: #fff !important; /* Texto blanco */
+  font-size: 20px; /* Tamaño del texto */
+  font-weight: bold; /* Texto en negrita */
+  text-align: center; /* Asegurar que el texto esté centrado */
+  width: 100%; /* Asegurar que ocupe todo el ancho del contenedor */
+  box-sizing: border-box; /* Incluir padding y border en el ancho total */
+}
+
+.realizarPedido-formulario {
+  margin: 20px 0; /* Margen superior e inferior */
+  padding: 30px; /* Espaciado interno */
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos estén en una columna */
+  gap: 20px; /* Espaciado entre los elementos del formulario */
+}
+
+/*SweetAlert*/
+/* Botón de confirmación */
+.custom-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Espaciado horizontal entre los botones */
+}
+
+.custom-confirm-button {
+  background-color: #bb8f51 !important; /* Color de fondo */
+  color: #fff !important;              /* Color del texto */
+  border: none !important;             /* Sin bordes */
+  border-radius: 5px !important;       /* Bordes redondeados */
+  padding: 10px 20px !important;       /* Espaciado interno */
+  font-size: 16px !important;          /* Tamaño de fuente */
+  cursor: pointer !important;          /* Cambiar el cursor al pasar */
+  transition: background-color 0.3s ease !important; /* Transición suave */
+}
+
+.custom-confirm-button:hover {
+  background-color: #a0522d !important; /* Color de fondo al pasar el mouse */
+}
+
+/* Botón de cancelar */
+.custom-cancel-button {
+  background-color: #f5f5f5 !important; /* Color de fondo */
+  color: #333 !important;               /* Color del texto */
+  border: none !important;              /* Sin bordes */
+  border-radius: 5px !important;        /* Bordes redondeados */
+  padding: 10px 20px !important;        /* Espaciado interno */
+  font-size: 16px !important;           /* Tamaño de fuente */
+  cursor: pointer !important;           /* Cambiar el cursor al pasar */
+  transition: background-color 0.3s ease !important; /* Transición suave */
+}
+
+.custom-cancel-button:hover {
+  background-color: #e0e0e0 !important; /* Color de fondo al pasar el mouse */
+}

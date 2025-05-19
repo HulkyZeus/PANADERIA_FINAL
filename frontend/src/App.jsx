@@ -28,6 +28,7 @@ import AdminProductos from './pages/admin/AdminProductos';
 import Resenas from "./pages/Resenas";
 import FormularioEvento from "./pages/FormularioEvento.jsx";
 import AdminEventos from "./pages/admin/AdminEventos.jsx";
+import RealizarPedido from "./pages/RealizarPedido.jsx";
 
 
 function App() {
@@ -56,12 +57,14 @@ function App() {
             <Route path="/Register" element={<RegisterPage />} />
             <Route path="/FormularioEvento" element={<FormularioEvento />} />
             <Route path="/Resenas" element={<Resenas />} />
+            <Route path="/RealizarPedido" element={<RealizarPedido />} />
 
             {/* Rutas protegidas por autenticación */}
             <Route element={<ProtectedRoute />}>
               {/* Rutas de usuario normal */}
               <Route element={<RoleProtectedRoute allowedRoles={['usuario']} />}>
                 <Route path='/user' element={<UserDashboard />} />
+
               </Route>
 
               {/* Rutas de administrador */}

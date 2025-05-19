@@ -5,27 +5,40 @@ import {
   obtenerReviewPorId,
   actualizarReview,
   eliminarReview,
-  obtenerTodasLasReviews
 } from "../controllers/review.controller.js";
-import { authRequired } from "../middlewares/validateToken.js";
-import { isAdmin } from "../middlewares/adminPermiso.js";
-import { canAccessUserData } from "../middlewares/userPermissions.js";
+
+import { validateSchema } from "../middlewares/validator.middleware.js";
+import { reviewSchema } from "../schema/review.schema.js"; // Cambiado de pedidoSchema a reviewSchema
+import { authRequired} from "../middlewares/validateToken.js";
+import { obtenerTodasLasReviews } from "../controllers/review.controller.js"; 
 
 const router = Router();
 
-// Rutas públicas
-router.get("/reviews", obtenerReviews);
-router.get("/reviews/:id", obtenerReviewPorId);
+// Obtener todas las reviews
+router.get("/reviews", authRequired, obtenerReviews);
 
-// Rutas que requieren autenticación
-router.use(authRequired);
+// Obtener una review por ID
+router.get("/reviews/:id", authRequired, obtenerReviewPorId);
 
-// Rutas para usuarios autenticados
-router.post("/reviews", crearReview);
-router.put("/reviews/:id", canAccessUserData, actualizarReview);
-router.delete("/reviews/:id", canAccessUserData, eliminarReview);
+// Crear una nueva review
+router.post(
+  "/reviews",
+  authRequired,
+  validateSchema(reviewSchema), // Cambiado de pedidoSchema a reviewSchema
+  crearReview
+);
 
-// Ruta para obtener todas las reviews (solo admin)
-router.get("/reviews/all", isAdmin, obtenerTodasLasReviews);
+// Actualizar una review existente
+router.put(
+  "/reviews/:id",
+  authRequired,
+  validateSchema(reviewSchema), // Cambiado de pedidoSchema a reviewSchema
+  actualizarReview
+);
+
+// Eliminar una review
+router.delete("/reviews/:id", authRequired, eliminarReview);
 
 export default router;
+
+router.get("/reviews/all", authRequired, obtenerTodasLasReviews);

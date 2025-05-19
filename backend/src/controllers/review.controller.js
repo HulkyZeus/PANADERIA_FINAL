@@ -1,97 +1,123 @@
 import Review from "../models/review.model.js";
 
-export const obtenerReviews = async (req, res) => {
+// Crear una nueva reseña
+export const crearReview = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query; // Parámetros de paginación
-    const reviews = await Review.find({ usuario_id: req.user.id })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
-    const total = await Review.countDocuments({ usuario_id: req.user.id });
+      // Solo verifica autenticacion, no el rol
+      if (!req.user || !req.user.id) {
+          return res.status(401).json({ message: 'Debes iniciar sesión' });
+      }
 
-    res.json({
-      reviews,
-      total,
-      page: Number(page),
-      totalPages: Math.ceil(total / limit),
-    });
+      const { rating, description } = req.body;
+
+      // Validación básica
+      if (!rating || !description) {
+          return res.status(400).json({ 
+              message: 'Faltan campos requeridos',
+              required: ['rating', 'description']
+          });
+      }
+
+      const nuevaReview = await Review.create({
+          name: req.user.name,
+          rating,
+          description,
+          usuario_id: req.user.id
+      });
+
+      // Populate virtual para mostrar info del usuario
+      const reviewConUsuario = await Review.findById(nuevaReview._id)
+          .populate('usuario_id', 'name email');
+
+      return res.status(201).json({
+          message: 'Reseña creada exitosamente',
+          review: reviewConUsuario
+      });
+      res.status(201).json(nuevaReview);
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+      console.error('Error al crear reseña:', error);
+      
+      // Manejo específico de errores de validación
+      if (error.name === 'ValidationError') {
+          return res.status(400).json({
+              message: 'Error de validación',
+              errors: Object.values(error.errors).map(e => e.message)
+          });
+      }
+      
+      return res.status(500).json({ 
+          message: 'Error al guardar la reseña',
+          error: error.message 
+      });
   }
 };
 
+// Obtener todas las reseñas
+export const obtenerReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find().populate("usuario_id", "name email"); // Opcional: incluir datos del usuario
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener las reseñas", error: error.message });
+  }
+};
+
+
+
+// Obtener una reseña por ID
 export const obtenerReviewPorId = async (req, res) => {
   try {
-    const review = await Review.findOne({
-      _id: req.params.id,
-      usuario_id: req.user.id,
-    });
-    if (!review)
-      return res.status(404).json({ message: "Review no encontrada" });
+    const review = await Review.findById(req.params.id).populate("usuario_id", "name email");
+    if (!review) {
+      return res.status(404).json({ message: "Reseña no encontrada" });
+    }
     res.json(review);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error al obtener la reseña", error: error.message });
   }
-}
+};
 
-export const crearReview = async (req, res) => {
+// Actualizar una reseña
+export const actualizarReview = async (req, res) => {
   try {
     const { rating, description } = req.body;
 
-    // Validación adicional
-    if (!rating || rating < 1 || rating > 5) {
-      return res.status(400).json({ message: "La puntuación debe estar entre 1 y 5" });
-    }
-    if (!description || description.trim() === "") {
-      return res.status(400).json({ message: "La descripción es obligatoria" });
+    const reviewActualizada = await Review.findByIdAndUpdate(
+      req.params.id,
+      { rating, description },
+      { new: true }
+    );
+
+    if (!reviewActualizada) {
+      return res.status(404).json({ message: "Reseña no encontrada" });
     }
 
-    const nuevaReview = new Review({
-      ...req.body,
-      usuario_id: req.user.id,
-    });
-    const guardado = await nuevaReview.save();
-    res.status(201).json(guardado);
+    res.json({ message: "Reseña actualizada correctamente", review: reviewActualizada });
   } catch (error) {
-    console.error("Error al crear la reseña:", error);
-    res.status(500).json({ message: "Error interno del servidor al crear la reseña" });
+    res.status(500).json({ message: "Error al actualizar la reseña", error: error.message });
   }
 };
 
-export const actualizarReview = async (req, res) => {
-    try {
-        const actualizado = await Review.findOneAndUpdate(
-            { _id: req.params.id, usuario_id: req.user.id },
-            req.body,
-            { new: true }
-        );
-        if (!actualizado)
-            return res.status(404).json({ message: "Review no encontrada" });
-        res.json(actualizado);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-
+// Eliminar una reseña
 export const eliminarReview = async (req, res) => {
   try {
-    const eliminado = await Review.findOneAndDelete({
-      _id: req.params.id,
-      usuario_id: req.user.id,
-    });
-    if (!eliminado)
-      return res.status(404).json({ message: "Review no encontrada" });
-    res.json({ message: "Review eliminada" });
+    const review = await Review.findByIdAndDelete(req.params.id);
+    if (!review) {
+      return res.status(404).json({ message: "Reseña no encontrada" });
+    }
+    res.json({ message: "Reseña eliminada correctamente" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-export const obtenerTodasLasReviews = async (req, res) => {
-  try {
-    const reviews = await Review.find();
-    res.json(reviews);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error al eliminar la reseña", error: error.message });
   }
 };
 
+//Obtener todas las reseñas de un usuario
+export const obtenerTodasLasReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find().populate("usuario_id", "name email");
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener todas las reseñas", error: error.message });
+  }
+};

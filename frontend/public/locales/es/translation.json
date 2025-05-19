@@ -421,5 +421,22 @@
 
 
 
-    "API": "API"
+    "API": "API",
+
+    "Detalles de Compra": "Detalles de Compra",
+    "Nombre(s)": "Nombre",
+    "Apellido(s)": "Apellido",
+    "Cédula o NIT sin dígito de verificación": "Cédula o NIT sin dígito de verificación",
+    "No. Celular": "No. Celular",
+    "Dirección": "Dirección",
+    "Datos adicionales de tu dirección": "Datos adicionales de tu dirección",
+    "Ciudad": "Ciudad",
+    "Email": "Email",
+    "Producto": "Producto",
+    "Cantidad": "Cantidad",
+    "Precio": "Precio",
+    "Subtotal": "Subtotal",
+    "Total": "Total",
+    "Realizar Pedido": "Realizar Pedido",
+    "No hay productos en el carrito": "No hay productos en el carrito"
 }
