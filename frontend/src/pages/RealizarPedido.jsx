@@ -192,7 +192,7 @@ const RealizarPedido = () => {
       // Mostrar alerta de procesamiento de pago
       await Swal.fire({
         title: 'Dirigiendo al pago',
-        timer: 4000,
+        timer: 2000,
         timerProgressBar: true,
         didOpen: () => {
           Swal.showLoading()

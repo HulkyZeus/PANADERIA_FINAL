@@ -1,5 +1,5 @@
 import "../css/main.css";
-import { Layout, Row, Col, Modal, Button } from "antd";
+import { Layout, Row, Col, Modal, Button, message } from "antd";
 import { useState, useEffect } from "react";
 import FondoPas from '../img/FondoPas.webp'
 import { useTranslation } from "react-i18next";
@@ -84,10 +84,10 @@ const Pasteleria = () => {
     event.stopPropagation();
     if (quantities[index] > 0) {
       const newItem = { 
-        name: products[index].title[0],
+        name: products[index].name,
         price: products[index].price,
         quantity: quantities[index],
-        image: products[index].img
+        image: products[index].imageUrl
       };
       
       // Obtener el carrito actual del localStorage
@@ -103,6 +103,12 @@ const Pasteleria = () => {
       // Mostrar mensaje de éxito
       message.success('Producto agregado al carrito');
     }
+  };
+
+  const handleCardClick = (index) => {
+    const newIsFlipped = [...isFlipped];
+    newIsFlipped[index] = !newIsFlipped[index];
+    setIsFlipped(newIsFlipped);
   };
 
   const handleCloseModal = () => {

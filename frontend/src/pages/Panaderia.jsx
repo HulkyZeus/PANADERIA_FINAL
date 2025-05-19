@@ -92,15 +92,11 @@ const Panaderia = () => {
   const addToCartHandler = (index, event) => {
     event.stopPropagation();
     if (quantities[index] > 0) {
-      const newItem = { ...products[index], quantity: quantities[index] };
-      setCart((prevCart) => [...prevCart, newItem]);// Agrega el producto al carrito
-      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
-      setIsModalVisible(true); 
       const newItem = { 
-        name: products[index].title[0],
+        name: products[index].name,
         price: products[index].price,
         quantity: quantities[index],
-        image: products[index].img
+        image: products[index].imageUrl
       };
       
       // Obtener el carrito actual del localStorage

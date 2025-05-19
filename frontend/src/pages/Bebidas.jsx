@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Layout, Row, Col, Button, Modal } from 'antd';
+import { Layout, Row, Col, Button, Modal, message} from 'antd';
 import { useTranslation } from "react-i18next";
 import { getProductsByCategory } from "../api/products";
 import FondoBeb from '../img/FondoBeb.webp';
@@ -85,10 +85,10 @@ const Bebidas = () => {
     event.stopPropagation();
     if (quantities[index] > 0) {
       const newItem = { 
-        name: products[index].title[0],
+        name: products[index].name,
         price: products[index].price,
         quantity: quantities[index],
-        image: products[index].img
+        image: products[index].imageUrl
       };
       
       // Obtener el carrito actual del localStorage
@@ -186,37 +186,6 @@ const Bebidas = () => {
             </Row>
           ))}
         </div>
-
-        {/* Modal con carrito */}
-              <Modal
-        title="Tu Carrito"
-        open={isModalOpen}
-        onCancel={handleCloseModal}
-        footer={[
-          <Button key="back" onClick={handleCloseModal}>
-            {t("Cerrar")}
-          </Button>,
-        ]}
-        width={500}
-        style={{ top: 20 }}
-      >
-        {cart.length === 0 ? (
-          <p>{t("El carrito está vacío.")}</p>
-        ) : (
-          <div>
-            {cart.map((item, index) => (
-              <div key={index} className="carrito-item" style={{ display: 'flex', marginBottom: '15px' }}>
-                <img src={item.imageUrl} alt={item.title} style={{ width: '50px', marginRight: '10px' }} />
-                <div>
-                  <h3>{item.title}</h3>
-                  <p>{`Precio: $${item.price}`}</p>
-                  <p>{`Cantidad: ${item.quantity}`}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Modal>
       </Content>
     </Layout>
   );

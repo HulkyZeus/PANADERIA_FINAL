@@ -87,10 +87,10 @@ const Desayunos = () => {
     event.stopPropagation();
     if (quantities[index] > 0) {
       const newItem = { 
-        name: products[index].title[0],
+        name: products[index].name,
         price: products[index].price,
         quantity: quantities[index],
-        image: products[index].img
+        image: products[index].imageUrl
       };
       
       // Obtener el carrito actual del localStorage
@@ -106,6 +106,14 @@ const Desayunos = () => {
       // Mostrar mensaje de éxito
       message.success('Producto agregado al carrito');
     }
+  };
+
+  const handleCardClick = (index) => {
+    setIsFlipped((prevFlipped) => {
+      const newFlipped = [...prevFlipped];
+      newFlipped[index] = !newFlipped[index];
+      return newFlipped;
+    });
   };
   
 
