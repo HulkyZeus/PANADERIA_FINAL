@@ -2,18 +2,6 @@ import { useState, useEffect } from "react";
 import { Layout, Row, Col, Button, Modal } from 'antd';
 import { useTranslation } from "react-i18next";
 import { getProductsByCategory } from "../api/products";
-import Naranja from '../img/Naranja.webp';
-import Zanahoria from '../img/Zanahoria.webp';
-import Verde from '../img/Verde.webp';
-import Milo from '../img/Milo.webp';
-import Americano from '../img/Americano.webp';
-import Capu from '../img/Capu.webp';
-import Choco from '../img/Choco.webp';
-import Coke from '../img/Coke.webp';
-import Expreso from '../img/Expreso.webp';
-import Limonada from '../img/Limonada.webp';
-import Avena from '../img/Avena.webp';
-import Sevillana from '../img/Sevillana.webp';
 import FondoBeb from '../img/FondoBeb.webp';
 
 
