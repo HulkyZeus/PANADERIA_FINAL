@@ -119,13 +119,9 @@ const AdminProductos = () => {
     { value: 'bebidas', label: 'Bebidas' },
     { value: 'panes', label: 'Panes' },
     { value: 'postres', label: 'Postres' },
-    { value: 'cumpleaños', label: 'Cumpleaños' },
-    { value: 'desayunos', label: 'Desayunos' },
-    { value: 'matrimonios', label: 'Matrimonios' },
-    { value: 'babyshowers', label: 'Baby Showers' },
-    { value: 'aniversarios', label: 'Aniversarios' },
-    { value: 'panaderia', label: 'Panadería' },
-    { value: 'pasteleria', label: 'Pastelería' }
+    { value: 'desayuno', label: 'Desayunos' },
+    { value: 'combos', label: 'Combos' },
+
   ];
 
   const filteredProducts = selectedCategory === 'all' 
@@ -206,6 +202,8 @@ const AdminProductos = () => {
               <Select.Option value="bebidas">Bebidas</Select.Option>
               <Select.Option value="panes">Panes</Select.Option>
               <Select.Option value="postres">Postres</Select.Option>
+              <Select.Option value="desayunos">Desayunos</Select.Option>
+              <Select.Option value="combos">Combos</Select.Option>
             </Select>
           </Form.Item>
 

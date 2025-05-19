@@ -64,7 +64,7 @@ const Pasteleria = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await getProductsByCategory("pasteleria");
+        const response = await getProductsByCategory("postres");
         setProducts(response.data);
         setQuantities(Array(response.data.length).fill(0));
         setIsFlipped(Array(response.data.length).fill(false));
@@ -137,7 +137,7 @@ const Pasteleria = () => {
                       <div className="card-back">
                         <div
                           className="background-image"
-                          style={{ backgroundImage: `url(${product.img})` }}
+                          style={{ backgroundImage: `url(${product.imageUrl})` }}
                         />
                         <div className="card-content">
                           <h3 className="product-name">{product.name}</h3>

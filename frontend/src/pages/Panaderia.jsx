@@ -122,12 +122,13 @@ const Panaderia = () => {
     try {
       setIsLoading(true);
       const response = await axios.get("/products");
-      const filteredProducts = response.data.filter(product => product.category.toLowerCase === "panes");
+      // Corrige el filtro para panes
+      const filteredProducts = response.data.filter(product => product.category.toLowerCase() === "panes");
       setProducts(filteredProducts);
-      setQuantities(Array(response.data.length).fill(0));// Inicializa las cantidades en 0
+      setQuantities(Array(filteredProducts.length).fill(0)); // Inicializa las cantidades según los productos filtrados
     } catch (error) {
       console.error("Error al obtener los productos:", error);
-    }finally {
+    } finally {
       setIsLoading(false);
     }
   }
@@ -156,7 +157,9 @@ const Panaderia = () => {
           {Array.from({ length: Math.ceil(products.length / 4) }, (_, i) => (
             <Row key={i} gutter={[16, 16]} justify="center" style={{ margin: "30px 200px" }}>
               {products.slice(i * 4, (i + 1) * 4).map((product, index) => (
-                <Col key={product.id} span={6}>
+
+                <Col key={product._id || product.id} span={6}>
+
                   <div
                     className={`custom-card ${isFlipped[i * 4 + index] ? "flipped" : ""}`}
                     onClick={() => handleCardClick(i * 4 + index)}
@@ -176,8 +179,9 @@ const Panaderia = () => {
                         <div className="card-content">
                           <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
-                          <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
-                          <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
+
+                          <p><strong>${isNaN(product.price) ? "0" : product.price}</strong></p>
+
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -230,10 +234,11 @@ const Panaderia = () => {
             {cart.map((item, index) => (
               <div key={index} className="carrito-item" style={{ display: "flex", marginBottom: "15px" }}>
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
-                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
-                  <h3>{item.title}</h3>
-                  <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
+
+                  <h3>{item.name}</h3>
+                  <p>{`Precio: $${isNaN(item.price) ? "0" : item.price}`}</p>
+
                   <p>{`Cantidad: ${item.quantity}`}</p>
                 </div>
               </div>
