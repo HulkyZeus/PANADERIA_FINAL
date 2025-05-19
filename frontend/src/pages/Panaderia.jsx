@@ -1,11 +1,9 @@
 import "../css/main.css";
 import { Layout, Row, Col, Modal, Button } from "antd";
-import { useState } from "react";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import axios from "../api/axios";
+import { useState, useEffect } from "react";
 import FondoPan from '../img/FondoPan.webp'
+import { useTranslation } from "react-i18next";
+import { getProductsByCategory } from "../api/products";
 
 
 const cajaDecoracion = {
@@ -61,11 +59,10 @@ const { Content } = Layout;
 const Panaderia = () => {
   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
-  const [isFlipped, setIsFlipped] = useState(Array(products.length).fill(false));
-  const [quantities, setQuantities] = useState(Array(products.length).fill(0));
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [cart, setCart] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [quantities, setQuantities] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFlipped, setIsFlipped] = useState([]);
 
 
   useEffect(() => {
@@ -96,9 +93,9 @@ const Panaderia = () => {
     event.stopPropagation();
     if (quantities[index] > 0) {
       const newItem = { ...products[index], quantity: quantities[index] };
-      setCart((prevCart) => [...prevCart, newItem]);// Agrega el producto al carrito
-      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
-      setIsModalVisible(true); 
+      setCart((prevCart) => [...prevCart, newItem]);
+      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]);
+      setIsModalVisible(true);  // Mostrar modal del carrito al agregar un producto
     }
   };
 
@@ -247,8 +244,8 @@ const Panaderia = () => {
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
-                  <h3>{item.title}</h3>
-                  <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
+                  <h3>{item.name}</h3>
+                  <p>{`Precio: $${item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
                 </div>
               </div>
