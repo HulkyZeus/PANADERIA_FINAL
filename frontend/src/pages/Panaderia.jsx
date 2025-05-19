@@ -5,10 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import axios from "../api/axios";
 import FondoPan from '../img/FondoPan.webp'
-import { useEffect } from "react";
-import axios from "../api/axios";
-import FondoPan from '../img/FondoPan.webp'
-
 
 
 const cajaDecoracion = {
@@ -67,26 +63,17 @@ const Panaderia = () => {
   const [isLoading, setIsLoading] = useState(true);
 
 
-  useEffect(() => {
-    // Traer productos de la categoría "Panadería"
-
-    const fetchPanaderia = async () => {
-      try {
-        const response = await getProductsByCategory("panaderia");
-        setProducts(response.data);
-        setQuantities(Array(response.data.length).fill(0));
-        setIsFlipped(Array(response.data.length).fill(false));
-      } catch (error) {
-        //Manejo de error
-      }
-    };
-    fetchPanaderia();
-  }, []);
+  const handleCardClick = (index) => {
+    setIsFlipped((prevFlipped) => {
+      const newFlipped = [...prevFlipped];
+      newFlipped[index] = !newFlipped[index];
+      return newFlipped;
+    });
+  };
 
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
     const newQuantities = [...quantities];
-    newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     setQuantities(newQuantities);
   };
@@ -101,18 +88,9 @@ const Panaderia = () => {
     }
   };
 
-  const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
-  };
-
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
-
 
   const fetchProducts = async () => {
     try {
@@ -133,8 +111,6 @@ const Panaderia = () => {
   }, []);
 
   if (isLoading) {
-    return <p style={{ textAlign: "center", marginTop: "50px" }}>{t("Cargando productos...")}</p>;
-  }
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -152,6 +128,7 @@ const Panaderia = () => {
             <Row key={i} gutter={[16, 16]} justify="center" style={{ margin: "30px 200px" }}>
               {products.slice(i * 4, (i + 1) * 4).map((product, index) => (
                 <Col key={product.id} span={6}>
+                <Col key={product.id} span={6}>
                   <div
                     className={`custom-card ${isFlipped[i * 4 + index] ? "flipped" : ""}`}
                     onClick={() => handleCardClick(i * 4 + index)}
@@ -161,6 +138,7 @@ const Panaderia = () => {
                       <div className="card-front">
                         <div className="card-header">
                           <div className="card-image-wrapper">
+                            <img src={product.imageUrl} alt={product.name} className="card-image" />
                             <img src={product.imageUrl} alt={product.name} className="card-image" />
                           </div>
                         </div>
@@ -172,7 +150,7 @@ const Panaderia = () => {
                           <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
                           <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
-                          <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
+
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -201,6 +179,7 @@ const Panaderia = () => {
                     </div>
                   </div>
                 </Col>
+                </Col>
               ))}
             </Row>
           ))}
@@ -227,6 +206,7 @@ const Panaderia = () => {
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
+
                   <h3>{item.title}</h3>
                   <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
