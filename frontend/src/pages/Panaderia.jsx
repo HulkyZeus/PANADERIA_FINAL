@@ -1,10 +1,12 @@
 import "../css/main.css";
 import { Layout, Row, Col, Modal, Button } from "antd";
 import { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import axios from "../api/axios";
 import FondoPan from '../img/FondoPan.webp'
+
 
 const cajaDecoracion = {
   display: 'flex',
@@ -65,17 +67,27 @@ const Panaderia = () => {
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
-  };
+
+  useEffect(() => {
+    // Traer productos de la categoría "Panadería"
+
+    const fetchPanaderia = async () => {
+      try {
+        const response = await getProductsByCategory("panaderia");
+        setProducts(response.data);
+        setQuantities(Array(response.data.length).fill(0));
+        setIsFlipped(Array(response.data.length).fill(false));
+      } catch (error) {
+        //Manejo de error
+      }
+    };
+    fetchPanaderia();
+  }, []);
 
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
     const newQuantities = [...quantities];
+    newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     setQuantities(newQuantities);
   };
@@ -90,9 +102,27 @@ const Panaderia = () => {
     }
   };
 
+  const handleCardClick = (index) => {
+    setIsFlipped((prevFlipped) => {
+      const newFlipped = [...prevFlipped];
+      newFlipped[index] = !newFlipped[index];
+      return newFlipped;
+    });
+  };
+
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
+    return <p style={{ textAlign: 'center', marginTop: '50px' }}>{t("Cargando productos...")}</p>;
+  }
+
+
 
   useEffect(() => {
     fetchProducts();
@@ -159,6 +189,7 @@ const Panaderia = () => {
                           <p>{product.description}</p>
                           <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
                           <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
+                          <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -216,8 +247,6 @@ const Panaderia = () => {
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
-                  <h3>{item.name}</h3>
-                  <p>{`Precio: $${item.price}`}</p>
                   <h3>{item.title}</h3>
                   <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
