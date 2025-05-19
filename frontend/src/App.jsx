@@ -27,6 +27,7 @@ import AdminCustomers from './pages/AdminCustomers';
 import AdminProductos from './pages/admin/AdminProductos';
 import Resenas from "./pages/Resenas";
 import FormularioEvento from "./pages/FormularioEvento.jsx";
+import AdminEventos from "./pages/admin/AdminEventos.jsx";
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
                 <Route path='/admin' element={<AdminDashboard />}>
                   <Route path='customers' element={<AdminCustomers />} />
                   <Route path='products' element={<AdminProductos />} />
+                  <Route path='events' element={<AdminEventos />} />
                 </Route>
               </Route>
             </Route>

@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const eventoSchema = new mongoose.Schema({
   usuario_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Usuario",
+    ref: "User", // <-- Debe coincidir con el modelo de usuario
     required: true,
   },
   nombre_evento: {
