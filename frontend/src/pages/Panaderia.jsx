@@ -120,6 +120,7 @@ const Panaderia = () => {
                         <div className="card-header">
                           <div className="card-image-wrapper">
                             <img src={product.imageUrl} alt={product.name} className="card-image" />
+                            <img src={product.imageUrl} alt={product.name} className="card-image" />
                           </div>
                         </div>
                         <h3 style={{ padding: "15px", fontWeight: 900 }}>{product.name}</h3>
@@ -159,6 +160,7 @@ const Panaderia = () => {
                       </div>
                     </div>
                   </div>
+                </Col>
                 </Col>
               ))}
             </Row>
