@@ -1,5 +1,5 @@
 import  { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import { Table, Button, Space, Typography, Popconfirm, message, Tag, Modal, Form, Input, Select, DatePicker, TimePicker, InputNumber, Row, Col, Divider } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
