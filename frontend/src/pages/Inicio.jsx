@@ -330,9 +330,9 @@ const Inicio = () => {
                 <Input.TextArea rows={4} />
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit">
+                <CustomButton type="primary" htmlType="submit">
                   {t("Enviar reseña")}
-                </Button>
+                </CustomButton>
               </Form.Item>
             </Form>
           )}
