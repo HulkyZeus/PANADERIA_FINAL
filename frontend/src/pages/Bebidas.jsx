@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout, Row, Col, Button, Modal } from 'antd';
+import { useTranslation } from "react-i18next";
+import { getProductsByCategory } from "../api/products";
 import Naranja from '../img/Naranja.webp';
 import Zanahoria from '../img/Zanahoria.webp';
 import Verde from '../img/Verde.webp';
@@ -13,7 +15,6 @@ import Limonada from '../img/Limonada.webp';
 import Avena from '../img/Avena.webp';
 import Sevillana from '../img/Sevillana.webp';
 import FondoBeb from '../img/FondoBeb.webp';
-import { useTranslation } from "react-i18next";
 
 
 const cajaDecoracion = {
@@ -62,31 +63,28 @@ const contenido = {
 
 const { Content } = Layout;
 
-
-
-
 const Bebidas = () => {
   const { t } = useTranslation(); 
-
-  const products = [
-    { title: [t("Jugo de Naranja")], img: Naranja, description:[t("DJugo de Naranja")], price: 10 },
-    { title: [t("Jugo de Zanahoria")], img: Zanahoria, description:[t("DJugo de Zanahoria")], price: 10 },
-    { title: [t("Batido Verde")], img: Verde, description: [t("DBatido Verde")], price: 10 },
-    { title: [t("Milo Frío")], img: Milo, description: [t("DMilo Frío")], price: 10 },
-    { title: [t("Americano")], img: Americano, description: [t("DAmericano")], price: 10 },
-    { title: [t("Capuccino")], img: Capu, description:[t("DCapuccino")], price: 10 },
-    { title: [t("Chocolate")], img: Choco, description:[t("DChocolate")], price: 10 },
-    { title: [t("Gaseosa")], img: Coke, description:[t("DGaseosa")], price: 10 },
-    { title: [t("Expreso")], img: Expreso, description:[t("DExpreso")], price: 10 },
-    { title: [t("Limonada")], img: Limonada, description:[t("DLimonada")], price: 10 },
-    { title: [t("Avena")], img: Avena, description: [t("DAvena")], price: 10 },
-    { title: [t("Sevillana")], img: Sevillana, description:[t("DSevillana")], price: 10 },
-  ];
-  
+  const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-  const [quantities, setQuantities] = useState(Array(products.length).fill(0));
+  const [quantities, setQuantities] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(Array(products.length).fill(false));
+  const [isFlipped, setIsFlipped] = useState([]);
+
+  useEffect(() => {
+    // Traer productos de la categoría "bebidas"
+    const fetchBebidas = async () => {
+      try {
+        const response = await getProductsByCategory("bebidas");
+        setProducts(response.data);
+        setQuantities(Array(response.data.length).fill(0));
+        setIsFlipped(Array(response.data.length).fill(false));
+      } catch (error) {
+        // Manejo de error
+      }
+    };
+    fetchBebidas();
+  }, []);
 
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
@@ -142,15 +140,15 @@ const Bebidas = () => {
                       <div className="card-front">
                         <div className="card-header">
                           <div className="card-image-wrapper">
-                            <img src={product.img} alt={product.title} className="card-image" />
+                            <img src={product.imageUrl} alt={product.name} className="card-image" />
                           </div>
                         </div>
-                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.title}</h3>
+                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.name}</h3>
                       </div>
                       <div className="card-back">
-                        <div className="background-image" style={{ backgroundImage: `url(${product.img})` }} />
+                        <div className="background-image" style={{ backgroundImage: `url(${product.imageUrl})` }} />
                         <div className="card-content">
-                          <h3 className="product-name">{product.title}</h3>
+                          <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
                           <p><strong>${product.price}</strong></p>
                           <div className="quantity-controls">

@@ -57,13 +57,11 @@ const contentStyle = {
   background: "#364d79",
 };
 
-
-
 const Inicio = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [formVisible, setFormVisible] = useState(false);
-  const [reviews, setReviews] = useState([]);// Inicialmente vacío
+  const [reviews, setReviews] = useState([]); // Inicialmente vacío
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [form] = Form.useForm();
   const [formKey, setFormKey] = useState(0); // Estado para forzar el reinicio del formulario
@@ -84,10 +82,10 @@ const Inicio = () => {
     }
   };
 
-    // Llamar a la API al montar el componente
-    useEffect(() => {
-      fetchReviews();
-    }, []);
+  // Llamar a la API al montar el componente
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
   const products = [
     { title: [t("Croissant")], img: Croissant },
@@ -263,7 +261,7 @@ const Inicio = () => {
         }}
       >
         <Row gutter={[16, 16]} justify="center">
-          {filteredReviews.map((review, index) => (
+          {filteredReviews.slice(-6).map((review, index) => (
             <Col span={8} key={index}>
               <Card
                 style={{
@@ -286,7 +284,7 @@ const Inicio = () => {
                         style={{ fontSize: "14px" }}
                       />
                       <span style={{ fontSize: "12px", color: "#888"}}>
-                        {review.date} {/* Fecha de la reseña */}
+                        {review.date}
                       </span>
                     </div>
                   }
