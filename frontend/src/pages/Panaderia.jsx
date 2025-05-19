@@ -1,10 +1,9 @@
 import "../css/main.css";
 import { Layout, Row, Col, Modal, Button } from "antd";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import axios from "../api/axios";
+import { useState, useEffect } from "react";
 import FondoPan from '../img/FondoPan.webp'
+import { useTranslation } from "react-i18next";
+import { getProductsByCategory } from "../api/products";
 
 const cajaDecoracion = {
   display: "flex",
@@ -52,14 +51,46 @@ const contenido = {
 
 const { Content } = Layout;
 
+
+
 const Panaderia = () => {
   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
-  const [isFlipped, setIsFlipped] = useState(Array(products.length).fill(false));
-  const [quantities, setQuantities] = useState(Array(products.length).fill(0));
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [cart, setCart] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [quantities, setQuantities] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFlipped, setIsFlipped] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await getProductsByCategory("panaderia");
+        setProducts(response.data);
+        setQuantities(Array(response.data.length).fill(0));
+        setIsFlipped(Array(response.data.length).fill(false));
+      } catch (error) {
+        //Manejar el error
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const handleQuantityChange = (index, change, event) => {
+    event.stopPropagation();
+    const newQuantities = [...quantities];
+    newQuantities[index] = Math.max(newQuantities[index] + change, 0);
+    setQuantities(newQuantities);
+  };
+
+  const addToCartHandler = (index, event) => {
+    event.stopPropagation();
+    if (quantities[index] > 0) {
+      const newItem = { ...products[index], quantity: quantities[index] };
+      setCart((prevCart) => [...prevCart, newItem]);
+      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]);
+      setIsModalVisible(true); 
+    }
+  };
 
   const handleCardClick = (index) => {
     setIsFlipped((prevFlipped) => {
@@ -69,30 +100,9 @@ const Panaderia = () => {
     });
   };
 
-  const handleQuantityChange = (index, change, event) => {
-    event.stopPropagation();
-    const newQuantities = [...quantities];
-    newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
-    setQuantities(newQuantities);
-  };
-
-  const addToCartHandler = (index, event) => {
-    event.stopPropagation();
-    if (quantities[index] > 0) {
-      const newItem = { ...products[index], quantity: quantities[index] };
-      setCart((prevCart) => [...prevCart, newItem]);// Agrega el producto al carrito
-      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
-      setIsModalVisible(true); 
-    }
-  };
-
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
-
-  if (isLoading) {
-    return <p style={{ textAlign: "center", marginTop: "50px" }}>{t("Cargando productos...")}</p>;
-  }
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -109,7 +119,7 @@ const Panaderia = () => {
           {Array.from({ length: Math.ceil(products.length / 4) }, (_, i) => (
             <Row key={i} gutter={[16, 16]} justify="center" style={{ margin: "30px 200px" }}>
               {products.slice(i * 4, (i + 1) * 4).map((product, index) => (
-                <Col key={product._id} span={6}>
+                <Col key={product.id} span={6}>
                   <div
                     className={`custom-card ${isFlipped[i * 4 + index] ? "flipped" : ""}`}
                     onClick={() => handleCardClick(i * 4 + index)}
@@ -125,13 +135,14 @@ const Panaderia = () => {
                         <h3 style={{ padding: "15px", fontWeight: 900 }}>{product.name}</h3>
                       </div>
                       <div className="card-back">
-                        <div className="background-image" style={{ backgroundImage: `url(${product.imageUrl})` }} />
+                        <div
+                          className="background-image"
+                          style={{ backgroundImage: `url(${product.img})` }}
+                        />
                         <div className="card-content">
                           <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
-                          <p>
-                            <strong>${isNaN(product.price) ? "0" : product.price}</strong>
-                          </p>
+                          <p><strong>${product.price}</strong></p>
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -184,13 +195,9 @@ const Panaderia = () => {
             {cart.map((item, index) => (
               <div key={index} className="carrito-item" style={{ display: "flex", marginBottom: "15px" }}>
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
-                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
-                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
                   <h3>{item.name}</h3>
                   <p>{`Precio: $${item.price}`}</p>
-                  <h3>{item.title}</h3>
-                  <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
                 </div>
               </div>
