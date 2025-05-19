@@ -138,7 +138,7 @@ const Combos = () => {
                         <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.name}</h3>
                       </div>
                       <div className="card-back">
-                        <div className="background-image" style={{ backgroundImage: `url(${product.img})` }} />
+                        <div className="background-image" style={{ backgroundImage: `url(${product.imageUrl})` }} />
                         <div className="card-content">
                           <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
