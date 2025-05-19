@@ -3,9 +3,7 @@ import { Layout, Row, Col, Modal, Button } from "antd";
 import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import axios from "../api/axios";
-import FondoPan from '../img/FondoPan.webp'
+import { getProductsByCategory } from "../api/products";
 
 
 const cajaDecoracion = {
@@ -61,27 +59,19 @@ const { Content } = Layout;
 const Panaderia = () => {
   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [quantities, setQuantities] = useState([]);
+  const [isFlipped, setIsFlipped] = useState(Array(products.length).fill(false));
+  const [quantities, setQuantities] = useState(Array(products.length).fill(0));
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isFlipped, setIsFlipped] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-
-  useEffect(() => {
-    // Traer productos de la categoría "Panadería"
-
-    const fetchPanaderia = async () => {
-      try {
-        const response = await getProductsByCategory("panaderia");
-        setProducts(response.data);
-        setQuantities(Array(response.data.length).fill(0));
-        setIsFlipped(Array(response.data.length).fill(false));
-      } catch (error) {
-        //Manejo de error
-      }
-    };
-    fetchPanaderia();
-  }, []);
+  const handleCardClick = (index) => {
+    setIsFlipped((prevFlipped) => {
+      const newFlipped = [...prevFlipped];
+      newFlipped[index] = !newFlipped[index];
+      return newFlipped;
+    });
+  };
 
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
@@ -94,18 +84,10 @@ const Panaderia = () => {
     event.stopPropagation();
     if (quantities[index] > 0) {
       const newItem = { ...products[index], quantity: quantities[index] };
-      setCart((prevCart) => [...prevCart, newItem]);
-      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]);
-      setIsModalVisible(true);  // Mostrar modal del carrito al agregar un producto
+      setCart((prevCart) => [...prevCart, newItem]);// Agrega el producto al carrito
+      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
+      setIsModalVisible(true); 
     }
-  };
-
-  const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
   };
 
   const handleCloseModal = () => {
@@ -230,6 +212,8 @@ const Panaderia = () => {
                 <div>
                   <h3>{item.name}</h3>
                   <p>{`Precio: $${item.price}`}</p>
+                  <h3>{item.title}</h3>
+                  <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
                 </div>
               </div>
