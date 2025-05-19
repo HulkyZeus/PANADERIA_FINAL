@@ -29,6 +29,7 @@ import Resenas from "./pages/Resenas";
 import FormularioEvento from "./pages/FormularioEvento.jsx";
 import AdminEventos from "./pages/admin/AdminEventos.jsx";
 import RealizarPedido from "./pages/RealizarPedido.jsx";
+import AdminReviews from "./pages/admin/AdminReviews.jsx";
 
 
 function App() {
@@ -73,6 +74,7 @@ function App() {
                   <Route path='customers' element={<AdminCustomers />} />
                   <Route path='products' element={<AdminProductos />} />
                   <Route path='events' element={<AdminEventos />} />
+                  <Route path='reviews' element={<AdminReviews />} />
                 </Route>
               </Route>
             </Route>
