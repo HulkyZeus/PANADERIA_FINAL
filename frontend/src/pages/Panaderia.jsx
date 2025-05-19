@@ -1,24 +1,10 @@
 import "../css/main.css";
 import { Layout, Row, Col, Modal, Button } from "antd";
 import { useState } from "react";
-import Croissant from '../img/croissant.png';
-import PanQue from '../img/pandequeso.png';
-import Brownie from '../img/brownie.png';
-import PanBrioche from '../img/panbrioche.png';
-import PanGalleta from '../img/pangalleta.png';
-import Cucas from '../img/cucas.png';
-import Cañas from '../img/cañas.png';
-import Panzerotti from '../img/panzerotti.png';
-import PanMasaMadre from '../img/panmasamadre.png';
-import PanHawaiano from '../img/panhawaiano.png';
-import Pandebono from '../img/pandebono.png';
-import Almojabanas from '../img/almojabanas.png';
-import Mogollas from '../img/mogolla.png';
-import PanAliñado from '../img/panaliñado.png';
-import MojiconQueso from '../img/mojiconconqueso.png';
-import PanBatido from '../img/panbatido.png';
-import FondoPan from '../img/FondoPan.webp'
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import axios from "../api/axios";
+import FondoPan from '../img/FondoPan.webp'
 
 const cajaDecoracion = {
   display: 'flex',
@@ -72,30 +58,12 @@ const { Content } = Layout;
 
 const Panaderia = () => {
   const { t } = useTranslation();
-
-  const products = [
-    { title: [t("Croissant")], img: Croissant, description: [t("DCroissant")], price: 10 },
-    { title: [t("Pan Brioche Dulce")], img: PanBrioche, description: [t("DPan Brioche Dulce")], price: 10 },
-    { title: [t("Pan de Queso")], img: PanQue, description: [t("DPan de Queso")], price: 10 },
-    { title: [t("Pan Galleta")], img: PanGalleta, description: [t("DPan Galleta")], price: 10 },
-    { title: [t("Cucas")], img: Cucas, description: [t("DCucas")], price: 10 },
-    { title: [t("Caña")], img: Cañas, description: [t("DCaña")], price: 10 },
-    { title: [t("Panzerotti")], img: Panzerotti, description: [t("DPanzerotti")], price: 10 },
-    { title: [t("Pan de Masa Madre")], img: PanMasaMadre, description: [t("DPan de Masa Madre")], price: 10 },
-    { title: [t("Pan Hawaiano")], img: PanHawaiano, description: [t("DPan Hawaiano")], price: 10 },
-    { title: [t("Pandebono")], img: Pandebono, description: [t("DPandebono")], price: 10 },
-    { title: [t("Almojabana")], img: Almojabanas, description: [t("DAlmojabana")], price: 10 },
-    { title: [t("Mogolla")], img: Mogollas, description: [t("DMogolla")], price: 10 },
-    { title: [t("Pan aliñado")], img: PanAliñado, description: [t("DPan aliñado")], price: 10 },
-    { title: [t("Mojicón con Queso")], img: MojiconQueso, description: [t("DMojicón con Queso")], price: 10 },
-    { title: [t("Brownie")], img: Brownie, description: [t("DBrownie")], price: 10 },
-    { title: [t("Pan Batido")], img: PanBatido, description: [t("D  Pan Batido")], price: 10 },
-  ];
-  
+  const [products, setProducts] = useState([]);
   const [isFlipped, setIsFlipped] = useState(Array(products.length).fill(false));
   const [quantities, setQuantities] = useState(Array(products.length).fill(0));
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [cart, setCart] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleCardClick = (index) => {
     setIsFlipped((prevFlipped) => {
@@ -108,7 +76,7 @@ const Panaderia = () => {
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
     const newQuantities = [...quantities];
-    newQuantities[index] = Math.max(newQuantities[index] + change, 0);
+    newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     setQuantities(newQuantities);
   };
 
@@ -116,8 +84,8 @@ const Panaderia = () => {
     event.stopPropagation();
     if (quantities[index] > 0) {
       const newItem = { ...products[index], quantity: quantities[index] };
-      setCart((prevCart) => [...prevCart, newItem]);
-      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]);
+      setCart((prevCart) => [...prevCart, newItem]);// Agrega el producto al carrito
+      setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
       setIsModalVisible(true); 
     }
   };
@@ -125,6 +93,29 @@ const Panaderia = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
+
+  const fetchProducts = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get("/products");
+      const filteredProducts = response.data.filter(product => product.category.toLowerCase === "panes");
+      setProducts(filteredProducts);
+      setQuantities(Array(response.data.length).fill(0));// Inicializa las cantidades en 0
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+    }finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
+    return <p style={{ textAlign: 'center', marginTop: '50px' }}>{t("Cargando productos...")}</p>;
+  }
+
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -141,7 +132,8 @@ const Panaderia = () => {
           {Array.from({ length: Math.ceil(products.length / 4) }, (_, i) => (
             <Row key={i} gutter={[16, 16]} justify-content="center" style={{ margin:'30px 200px ' }}>
               {products.slice(i * 4, (i + 1) * 4).map((product, index) => (
-                <Col key={index} span={6}>
+                <Col key={product.id} span={6}>
+                <Col key={product.id} span={6}>
                   <div
                     className={`custom-card ${isFlipped[i * 4 + index] ? "flipped" : ""}`}
                     onClick={() => handleCardClick(i * 4 + index)}
@@ -151,17 +143,18 @@ const Panaderia = () => {
                       <div className="card-front">
                         <div className="card-header">
                           <div className="card-image-wrapper">
-                            <img src={product.img} alt={product.title} className="card-image" />
+                            <img src={product.imageUrl} alt={product.name} className="card-image" />
+                            <img src={product.imageUrl} alt={product.name} className="card-image" />
                           </div>
                         </div>
-                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.title}</h3>
+                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.name}</h3>
                       </div>
                       <div className="card-back">
-                        <div className="background-image" style={{ backgroundImage: `url(${product.img})` }} />
+                        <div className="background-image" style={{ backgroundImage: `url(${product.imageUrl})` }} />
                         <div className="card-content">
-                          <h3 className="product-name">{product.title}</h3>
+                          <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
-                          <p><strong>${product.price}</strong></p>
+                          <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -190,6 +183,7 @@ const Panaderia = () => {
                     </div>
                   </div>
                 </Col>
+                </Col>
               ))}
             </Row>
           ))}
@@ -197,7 +191,7 @@ const Panaderia = () => {
         {/* Modal para mostrar el carrito */}
       <Modal
         title="Tu Carrito"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCloseModal}
         footer={[
           <Button key="back" onClick={handleCloseModal}>
@@ -213,10 +207,13 @@ const Panaderia = () => {
           <div>
             {cart.map((item, index) => (
               <div key={index} className="carrito-item" style={{ display: "flex", marginBottom: "15px" }}>
-                <img src={item.img} alt={item.title} style={{ width: "50px", marginRight: "10px" }} />
+                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
+                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
-                  <h3>{item.title}</h3>
+                  <h3>{item.name}</h3>
                   <p>{`Precio: $${item.price}`}</p>
+                  <h3>{item.title}</h3>
+                  <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
                 </div>
               </div>
