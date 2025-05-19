@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import axios from '../api/axios';
 
 const AuthContext = createContext();
@@ -86,12 +86,18 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data.user);
       setIsAuthenticated(true);
     } catch (error) {
+      console.error('Check auth error:', error);
       setUser(null);
       setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   const value = {
     isAuthenticated,
