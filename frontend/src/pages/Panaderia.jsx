@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getProductsByCategory } from "../api/products";
 
 
+
 const cajaDecoracion = {
   display: 'flex',
   alignItems: 'center',
@@ -65,17 +66,27 @@ const Panaderia = () => {
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
-  };
+
+  useEffect(() => {
+    // Traer productos de la categoría "Panadería"
+
+    const fetchPanaderia = async () => {
+      try {
+        const response = await getProductsByCategory("panaderia");
+        setProducts(response.data);
+        setQuantities(Array(response.data.length).fill(0));
+        setIsFlipped(Array(response.data.length).fill(false));
+      } catch (error) {
+        //Manejo de error
+      }
+    };
+    fetchPanaderia();
+  }, []);
 
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
     const newQuantities = [...quantities];
+    newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     newQuantities[index] = Math.max(newQuantities[index] + change, 0);// Evita valores negativos
     setQuantities(newQuantities);
   };
@@ -88,6 +99,14 @@ const Panaderia = () => {
       setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]); // Reinicia la cantidad a 0
       setIsModalVisible(true); 
     }
+  };
+
+  const handleCardClick = (index) => {
+    setIsFlipped((prevFlipped) => {
+      const newFlipped = [...prevFlipped];
+      newFlipped[index] = !newFlipped[index];
+      return newFlipped;
+    });
   };
 
   const handleCloseModal = () => {
@@ -210,8 +229,6 @@ const Panaderia = () => {
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
-                  <h3>{item.name}</h3>
-                  <p>{`Precio: $${item.price}`}</p>
                   <h3>{item.title}</h3>
                   <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
