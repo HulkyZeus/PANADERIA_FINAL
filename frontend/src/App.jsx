@@ -28,6 +28,7 @@ import AdminProductos from './pages/admin/AdminProductos';
 import AdminOrders from './pages/admin/AdminOrders';
 import Resenas from "./pages/Resenas";
 import FormularioEvento from "./pages/FormularioEvento.jsx";
+import AdminEventos from "./pages/admin/AdminEventos.jsx";
 import RealizarPedido from "./pages/RealizarPedido.jsx";
 import PedidoConfirmado from "./pages/PedidoConfirmado.jsx";
 
@@ -75,6 +76,7 @@ function App() {
                   <Route path='customers' element={<AdminCustomers />} />
                   <Route path='products' element={<AdminProductos />} />
                   <Route path='orders' element={<AdminOrders />} />
+                  <Route path='events' element={<AdminEventos />} />
                 </Route>
               </Route>
             </Route>

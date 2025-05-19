@@ -1,6 +1,20 @@
-import { useState } from "react";
-import { Form, Input, Button, Select, DatePicker, TimePicker, InputNumber, Row, Col, Card } from "antd";
+import { useState, useEffect } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  DatePicker,
+  TimePicker,
+  InputNumber,
+  Row,
+  Col,
+  Card,
+  notification, // <-- Agrega esta línea
+} from "antd";
 import styled from "@emotion/styled";
+import { createEventoRequest } from "../api/eventos"; // importa la función
+import { getProducts } from "../api/products"; // Corrige la ruta y el nombre
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -21,8 +35,12 @@ const StyledCard = styled(Card)`
 `;
 
 const FormularioEvento = () => {
-  const [formData, setFormData] = useState({
-    usuario_id: "",
+  // Obtén el usuario desde localStorage (ajusta según tu lógica real)
+  const usuario = JSON.parse(localStorage.getItem("usuario")); // o como lo guardes
+  const usuario_id = usuario ? usuario._id : ""; // o usuario.id según tu backend
+
+  const valoresIniciales = {
+    usuario_id: usuario_id,
     nombre_evento: "",
     tipo_evento: "Matrimonio",
     descripcion: "",
@@ -31,7 +49,24 @@ const FormularioEvento = () => {
     hora_evento: null,
     cantidad_personas: 0,
     productos: [{ producto_id: "", cantidad: 0 }],
-  });
+  };
+
+  const [formData, setFormData] = useState(valoresIniciales);
+
+  const [productosDisponibles, setProductosDisponibles] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await getProducts();
+        setProductosDisponibles(response.data); // Ajusta según la estructura de tu respuesta
+      } catch (error) {
+        console.error("Error al obtener los productos:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -55,23 +90,62 @@ const FormularioEvento = () => {
     setFormData({ ...formData, productos });
   };
 
-  const handleSubmit = () => {
-    console.log("Datos del formulario:", formData);
-    // Aquí puedes enviar los datos al backend
+  // Función para validar campos requeridos
+  const validarCampos = () => {
+    if (
+      !formData.nombre_evento ||
+      !formData.tipo_evento ||
+      !formData.descripcion ||
+      !formData.direccion_evento ||
+      !formData.fecha_evento ||
+      !formData.hora_evento ||
+      !formData.cantidad_personas ||
+      formData.cantidad_personas < 1 ||
+      formData.productos.some(
+        (p) => !p.producto_id || !p.cantidad || p.cantidad < 1
+      )
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async () => {
+    if (!validarCampos()) {
+      notification.error({
+        message: "Campos incompletos",
+        description:
+          "Por favor, completa todos los campos obligatorios antes de enviar.",
+      });
+      return;
+    }
+    try {
+      const eventoData = {
+        ...formData,
+        fecha_evento: formData.fecha_evento
+          ? formData.fecha_evento.format("YYYY-MM-DD")
+          : "",
+        hora_evento: formData.hora_evento
+          ? formData.hora_evento.format("HH:mm")
+          : "",
+      };
+      await createEventoRequest(eventoData);
+      notification.success({
+        message: "Evento creado",
+        description: "El evento fue creado exitosamente.",
+      });
+      setFormData(valoresIniciales); // Limpia el formulario
+      window.scrollTo({ top: 0, behavior: "smooth" }); // Lleva al principio de la página
+    } catch (error) {
+      alert("Error al crear el evento");
+      console.error(error);
+    }
   };
 
   return (
     <FormContainer>
       <StyledCard title="Formulario de Evento" bordered={false}>
         <Form layout="vertical" onFinish={handleSubmit}>
-          <Form.Item label="Usuario ID" required>
-            <Input
-              placeholder="Ingrese el ID del usuario"
-              value={formData.usuario_id}
-              onChange={(e) => handleChange("usuario_id", e.target.value)}
-            />
-          </Form.Item>
-
           <Form.Item label="Nombre del Evento" required>
             <Input
               placeholder="Ingrese el nombre del evento"
@@ -139,13 +213,26 @@ const FormularioEvento = () => {
             {formData.productos.map((producto, index) => (
               <Row gutter={16} key={index} align="middle">
                 <Col span={10}>
-                  <Input
-                    placeholder="Producto ID"
+                  <Select
+                    placeholder="Seleccione un producto"
                     value={producto.producto_id}
-                    onChange={(e) =>
-                      handleProductoChange(index, "producto_id", e.target.value)
+                    onChange={(value) =>
+                      handleProductoChange(index, "producto_id", value)
                     }
-                  />
+                    showSearch
+                    filterOption={(input, option) =>
+                      (option?.children ?? "")
+                        .toString()
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                  >
+                    {productosDisponibles.map((prod) => (
+                      <Option key={prod._id} value={prod._id}>
+                        {prod.name}
+                      </Option>
+                    ))}
+                  </Select>
                 </Col>
                 <Col span={8}>
                   <InputNumber

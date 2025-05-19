@@ -1,12 +1,9 @@
-import { useState } from "react";
 import "../css/main.css";
-import { Layout, Row, Col, Modal, Button, message } from "antd"; 
-import Yaguara from '../img/Yaguara.webp'
-import Cumple from '../img/Cumple.webp'
-import Opita from '../img/Opita.webp'
-import Sorpresa from '../img/Sorpresa.webp'
+import { Layout, Row, Col, Modal, Button, message} from "antd";
+import { useState, useEffect } from "react";
 import FondoCom from '../img/FondoCom.webp'
 import { useTranslation } from "react-i18next";
+import { getProductsByCategory } from "../api/products";
 
 
 const cajaDecoracion = {
@@ -57,29 +54,28 @@ const { Content } = Layout;
 
 
 
-const Combos = ({ addToCart }) => {
-  const { t } = useTranslation(); 
-
-  const products = [
-    { title: [t("Combo Yaguareño")], img: Yaguara, description: [t("DCombo Yaguareño")], price: 10 },
-    { title: [t("Delicombo el Opita")], img: Opita, description: [t("DDelicombo el Opita")], price: 10 },
-    { title: [t("Combo Cumpleañero")], img: Cumple, description: [t("DCombo Cumpleañero")], price: 10 },
-    { title: [t("Desayuno Sorpresa")], img: Sorpresa, description: [t("DDesayuno Sorpresa")], price: 10 },
-  ];
-
-
-  const [isFlipped, setIsFlipped] = useState(Array(products.length).fill(false));
-  const [quantities, setQuantities] = useState(Array(products.length).fill(0));
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const Combos = () => {
+  const { t } = useTranslation();
+  const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const [quantities, setQuantities] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFlipped, setIsFlipped] = useState([]);
 
-  const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
-  };
+
+  useEffect(() => {
+    const fetchCombos = async () => {
+      try {
+        const response = await getProductsByCategory("combos");
+        setProducts(response.data);
+        setQuantities(Array(response.data.length).fill(0));
+        setIsFlipped(Array(response.data.length).fill(false));
+      } catch (error) {
+        // Manejo de errores
+      }
+    };
+    fetchCombos();
+  }, []);
 
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
@@ -132,7 +128,7 @@ const Combos = ({ addToCart }) => {
           {Array.from({ length: Math.ceil(products.length / 4) }, (_, i) => (
             <Row key={i} gutter={[16, 16]} justify="center" style={{ margin: '30px 200px ' }}>
               {products.slice(i * 4, (i + 1) * 4).map((product, index) => (
-                <Col key={index} span={6}>
+                <Col key={product.id} span={6}>
                   <div
                     className={`custom-card ${isFlipped[i * 4 + index] ? "flipped" : ""}`}
                     onClick={() => handleCardClick(i * 4 + index)}
@@ -142,15 +138,15 @@ const Combos = ({ addToCart }) => {
                       <div className="card-front">
                         <div className="card-header">
                           <div className="card-image-wrapper">
-                            <img src={product.img} alt={product.title} className="card-image" />
+                            <img src={product.imageUrl} alt={product.name} className="card-image" />
                           </div>
                         </div>
-                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.title}</h3>
+                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.name}</h3>
                       </div>
                       <div className="card-back">
-                        <div className="background-image" style={{ backgroundImage: `url(${product.img})` }} />
+                        <div className="background-image" style={{ backgroundImage: `url(${product.imageUrl})` }} />
                         <div className="card-content">
-                          <h3 className="product-name">{product.title}</h3>
+                          <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
                           <p><strong>${product.price}</strong></p>
                           <div className="quantity-controls">
@@ -186,6 +182,7 @@ const Combos = ({ addToCart }) => {
           ))}
         </div>
       </Content>
+
     </Layout>
   );
 };

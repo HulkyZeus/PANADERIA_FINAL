@@ -815,3 +815,42 @@ table tbody tr:hover {
   flex-direction: column; /* Asegura que los elementos estén en una columna */
   gap: 20px; /* Espaciado entre los elementos del formulario */
 }
+
+/*SweetAlert*/
+/* Botón de confirmación */
+.custom-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Espaciado horizontal entre los botones */
+}
+
+.custom-confirm-button {
+  background-color: #bb8f51 !important; /* Color de fondo */
+  color: #fff !important;              /* Color del texto */
+  border: none !important;             /* Sin bordes */
+  border-radius: 5px !important;       /* Bordes redondeados */
+  padding: 10px 20px !important;       /* Espaciado interno */
+  font-size: 16px !important;          /* Tamaño de fuente */
+  cursor: pointer !important;          /* Cambiar el cursor al pasar */
+  transition: background-color 0.3s ease !important; /* Transición suave */
+}
+
+.custom-confirm-button:hover {
+  background-color: #a0522d !important; /* Color de fondo al pasar el mouse */
+}
+
+/* Botón de cancelar */
+.custom-cancel-button {
+  background-color: #f5f5f5 !important; /* Color de fondo */
+  color: #333 !important;               /* Color del texto */
+  border: none !important;              /* Sin bordes */
+  border-radius: 5px !important;        /* Bordes redondeados */
+  padding: 10px 20px !important;        /* Espaciado interno */
+  font-size: 16px !important;           /* Tamaño de fuente */
+  cursor: pointer !important;           /* Cambiar el cursor al pasar */
+  transition: background-color 0.3s ease !important; /* Transición suave */
+}
+
+.custom-cancel-button:hover {
+  background-color: #e0e0e0 !important; /* Color de fondo al pasar el mouse */
+}

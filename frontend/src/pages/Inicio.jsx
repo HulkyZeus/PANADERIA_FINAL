@@ -8,6 +8,7 @@ import {
   Input,
   Button,
   Select,
+  message,
 } from "antd";
 import Imagen1 from "../img/PanAlinado.jpg";
 import Imagen2 from "../img/Pan3.jpg";
@@ -25,9 +26,9 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
-import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import Swal from "sweetalert2";
+import { useEffect } from "react";
 
 const CustomButton = styled(Button)`
   background-color: #bb8f51 !important;
@@ -56,31 +57,35 @@ const contentStyle = {
   background: "#364d79",
 };
 
-
-
 const Inicio = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [formVisible, setFormVisible] = useState(false);
-  const [reviews, setReviews] = useState([
-    {
-      name: "María López",
-      rating: 5,
-      description: t("El mejor pan que he probado, siempre fresco y delicioso."),
-    },
-    {
-      name: "Carlos Pérez",
-      rating: 4,
-      description: t("Muy buena calidad, aunque podrían mejorar el servicio."),
-    },
-    {
-      name: "Ana García",
-      rating: 5,
-      description: t("Las tartas son increíbles, especialmente la de manzana."),
-    },
-  ]);
-  const [filteredReviews, setFilteredReviews] = useState(reviews);
+  const [reviews, setReviews] = useState([]); // Inicialmente vacío
+  const [filteredReviews, setFilteredReviews] = useState([]);
   const [form] = Form.useForm();
+  const [formKey, setFormKey] = useState(0); // Estado para forzar el reinicio del formulario
+
+  // Función para obtener todas las reseñas desde la API
+  const fetchReviews = async () => {
+    try {
+      const response = await api.get("/reviews"); // Cambia "/reviews" por el endpoint correcto
+      const reviewsWithDefaults = response.data.map((review) => ({
+        ...review,
+        name: review.usuario_id?.email || "Usuario Anónimo", // Valor predeterminado si falta el nombre
+        date: new Date(review.createdAt).toLocaleDateString(), // Fecha actual si falta
+      }));
+      setReviews(reviewsWithDefaults);
+      setFilteredReviews(reviewsWithDefaults);
+    } catch (error) {
+      console.error("Error al obtener las reseñas:", error);
+    }
+  };
+
+  // Llamar a la API al montar el componente
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
   const products = [
     { title: [t("Croissant")], img: Croissant },
@@ -105,10 +110,15 @@ const Inicio = () => {
         showCancelButton: true,
         confirmButtonText: t("Iniciar sesión"),
         cancelButtonText: t("Cerrar"),
+        customClass: {
+          confirmButton: "custom-confirm-button", // Clase personalizada para el botón de confirmación
+          cancelButton: "custom-cancel-button",   // Clase personalizada para el botón de cancelar
+          actions: "custom-actions", // Clase personalizada para el contenedor de botones
+        },
+        buttonsStyling: false, // Desactiva los estilos predeterminados de SweetAlert2
       }).then((result) => {
         if (result.isConfirmed) {
-          // Redirigir al usuario a la página de inicio de sesión
-          window.location.href = "/login";
+          window.location.href = "/login"; // Redirigir al usuario
         }
       });
     }
@@ -118,7 +128,41 @@ const Inicio = () => {
     if (value) {
       setFilteredReviews(reviews.filter((review) => review.rating === value));
     } else {
-      setFilteredReviews(reviews);
+      setFilteredReviews(reviews);// Mostrar todas las reseñas si no hay filtro
+    }
+  };
+
+  const handleAddReview = async (values) => {
+    try {
+      // Enviar la reseña a la API
+      const response = await api.post("/reviews", {
+        name: user.username, // Incluye el nombre del usuario
+        rating: values.rating,
+        description: values.description,
+      });
+  
+      // Crear una nueva reseña con los datos del usuario
+      const newReview = {
+        name: user.username, // Usa el nombre del usuario logueado
+        rating: values.rating,
+        description: values.description,
+        date: new Date().toLocaleDateString(),
+      };
+  
+      // Actualizar el estado con la nueva reseña
+      setReviews((prev) => [...prev, newReview]);
+      setFilteredReviews((prev) => [...prev, newReview]); // Actualizar también las reseñas filtradas
+      message.success("¡Reseña publicada!");
+      
+      setFormKey((prevKey) => prevKey + 1); // Cambiar la clave del formulario para reiniciarlo
+      setFormVisible(false); // Ocultar el formulario
+    } catch (error) {
+      console.error("Error al agregar la reseña:", error);
+      if (error.response?.status === 401) {
+        message.error("Debes iniciar sesión para agregar una reseña.");
+      } else {
+        message.error("Error al publicar la reseña. Inténtalo de nuevo.");
+      }
     }
   };
 
@@ -198,7 +242,7 @@ const Inicio = () => {
           onChange={handleFilterChange}
           allowClear
         >
-          <Select.Option value={5}>{t("Todas")}</Select.Option>
+          <Select.Option value={null}>{t("Todas")}</Select.Option>
           <Select.Option value={5}>{t("5 estrellas")}</Select.Option>
           <Select.Option value={4}>{t("4 estrellas")}</Select.Option>
           <Select.Option value={3}>{t("3 estrellas")}</Select.Option>
@@ -217,7 +261,7 @@ const Inicio = () => {
         }}
       >
         <Row gutter={[16, 16]} justify="center">
-          {filteredReviews.map((review, index) => (
+          {filteredReviews.slice(-6).map((review, index) => (
             <Col span={8} key={index}>
               <Card
                 style={{
@@ -232,13 +276,16 @@ const Inicio = () => {
               >
                 <Card.Meta
                   title={
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <strong>{review.name}</strong>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "5px"  }}>
+                      <strong style={{fontSize:"16px"}}>{review.name}</strong>
                       <Rate
                         disabled
                         defaultValue={review.rating}
-                        style={{ marginLeft: "10px", fontSize: "14px" }}
+                        style={{ fontSize: "14px" }}
                       />
+                      <span style={{ fontSize: "12px", color: "#888"}}>
+                        {review.date}
+                      </span>
                     </div>
                   }
                   description={review.description}
@@ -283,9 +330,9 @@ const Inicio = () => {
                 <Input.TextArea rows={4} />
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit">
+                <CustomButton type="primary" htmlType="submit">
                   {t("Enviar reseña")}
-                </Button>
+                </CustomButton>
               </Form.Item>
             </Form>
           )}

@@ -17,7 +17,7 @@ const productSchema = mongoose.Schema({
     category: {
         type: String,
         required: true,
-        enum: ["bebidas", "panes", "postres"],
+        enum: ["bebidas", "panes", "postres", "desayunos", "combos"],
         default: "bebidas"
     },
     imageUrl: {
