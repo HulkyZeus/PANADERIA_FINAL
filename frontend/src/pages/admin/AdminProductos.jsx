@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Button, Upload, Form, Input, InputNumber, Modal, message, Image, Space, Select } from 'antd';
+import { useState, useEffect } from 'react';
+import { Card, Button, Upload, Form, Input, InputNumber, Modal, message, Image, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../api/products';
 import { beforeUpload } from '../../utils/imageUtils';

@@ -5,9 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import axios from "../api/axios";
 import FondoPan from '../img/FondoPan.webp'
-import { useEffect } from "react";
-import axios from "../api/axios";
-import FondoPan from '../img/FondoPan.webp'
 
 
 
