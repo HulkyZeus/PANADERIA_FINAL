@@ -119,7 +119,7 @@ const AdminProductos = () => {
     { value: 'bebidas', label: 'Bebidas' },
     { value: 'panes', label: 'Panes' },
     { value: 'postres', label: 'Postres' },
-    { value: 'desayuno', label: 'Desayunos' },
+    { value: 'desayunos', label: 'Desayunos' },
     { value: 'combos', label: 'Combos' },
 
   ];
