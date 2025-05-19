@@ -175,7 +175,7 @@ const Bebidas = () => {
         {/* Modal con carrito */}
               <Modal
         title="Tu Carrito"
-        open={isModalVisible}
+        open={isModalOpen}
         onCancel={handleCloseModal}
         footer={[
           <Button key="back" onClick={handleCloseModal}>

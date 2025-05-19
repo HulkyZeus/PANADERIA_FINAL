@@ -8,6 +8,7 @@ import FondoPan from '../img/FondoPan.webp'
 
 
 
+
 const cajaDecoracion = {
   display: 'flex',
   alignItems: 'center',
@@ -214,7 +215,7 @@ const Panaderia = () => {
         {/* Modal para mostrar el carrito */}
       <Modal
         title="Tu Carrito"
-        open={isModalVisible}
+        open={isModalOpen}
         onCancel={handleCloseModal}
         footer={[
           <Button key="back" onClick={handleCloseModal}>
