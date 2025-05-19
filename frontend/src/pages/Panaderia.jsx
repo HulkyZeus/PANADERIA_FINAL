@@ -6,55 +6,52 @@ import { useEffect } from "react";
 import axios from "../api/axios";
 import FondoPan from '../img/FondoPan.webp'
 
+
 const cajaDecoracion = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '100%',
-  height: '150px',
-  backgroundColor: 'rgba(114, 93, 66, 1)',
-  borderRadius: '20px',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "100%",
+  height: "150px",
+  backgroundColor: "rgba(114, 93, 66, 1)",
+  borderRadius: "20px",
 };
 
 const texto = {
-  fontSize: '50px',
-  fontWeight: 'bold',
-  color: 'white',
-  textAlign: 'center',
+  fontSize: "50px",
+  fontWeight: "bold",
+  color: "white",
+  textAlign: "center",
 };
 
 const fondoPagina = {
-  position: 'relative',
-  minHeight: '100vh',
-  width: '100%',
-  overflow: 'hidden',
+  position: "relative",
+  minHeight: "100vh",
+  width: "100%",
+  overflow: "hidden",
 };
 
 const fondoImagen = {
   backgroundImage: `url(${FondoPan})`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
   opacity: 0.2,
-  position: 'absolute',
+  position: "absolute",
   top: 0,
   left: 0,
-  width: '100%',
-  height: '100%',
+  width: "100%",
+  height: "100%",
   zIndex: 1,
 };
 
 const contenido = {
-  position: 'relative',
+  position: "relative",
   zIndex: 2,
-  padding: '20px',
+  padding: "20px",
 };
 
-
-
 const { Content } = Layout;
-
-
 
 const Panaderia = () => {
   const { t } = useTranslation();
@@ -64,6 +61,7 @@ const Panaderia = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
 
   const handleCardClick = (index) => {
     setIsFlipped((prevFlipped) => {
@@ -113,12 +111,9 @@ const Panaderia = () => {
   }, []);
 
   if (isLoading) {
-    return <p style={{ textAlign: 'center', marginTop: '50px' }}>{t("Cargando productos...")}</p>;
-  }
-
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <Content style={fondoPagina}>
         <div style={fondoImagen}></div>
         <div style={contenido}>
@@ -130,14 +125,14 @@ const Panaderia = () => {
             </Col>
           </Row>
           {Array.from({ length: Math.ceil(products.length / 4) }, (_, i) => (
-            <Row key={i} gutter={[16, 16]} justify-content="center" style={{ margin:'30px 200px ' }}>
+            <Row key={i} gutter={[16, 16]} justify="center" style={{ margin: "30px 200px" }}>
               {products.slice(i * 4, (i + 1) * 4).map((product, index) => (
                 <Col key={product.id} span={6}>
                 <Col key={product.id} span={6}>
                   <div
                     className={`custom-card ${isFlipped[i * 4 + index] ? "flipped" : ""}`}
                     onClick={() => handleCardClick(i * 4 + index)}
-                    style={{ marginBottom: '20px' }}
+                    style={{ marginBottom: "20px" }}
                   >
                     <div className="card-inner">
                       <div className="card-front">
@@ -147,7 +142,7 @@ const Panaderia = () => {
                             <img src={product.imageUrl} alt={product.name} className="card-image" />
                           </div>
                         </div>
-                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.name}</h3>
+                        <h3 style={{ padding: "15px", fontWeight: 900 }}>{product.name}</h3>
                       </div>
                       <div className="card-back">
                         <div className="background-image" style={{ backgroundImage: `url(${product.imageUrl})` }} />
@@ -155,6 +150,7 @@ const Panaderia = () => {
                           <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
                           <p><strong>${isNaN(product.price)?"0": product.price}</strong></p>
+
                           <div className="quantity-controls">
                             <div className="arrow-buttons">
                               <button
@@ -210,8 +206,7 @@ const Panaderia = () => {
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
-                  <h3>{item.name}</h3>
-                  <p>{`Precio: $${item.price}`}</p>
+
                   <h3>{item.title}</h3>
                   <p>{`Precio: $${isNaN(item.price) ? "0":item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
@@ -225,5 +220,4 @@ const Panaderia = () => {
     </Layout>
   );
 };
-
 export default Panaderia;
