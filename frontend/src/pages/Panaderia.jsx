@@ -1,24 +1,9 @@
 import "../css/main.css";
 import { Layout, Row, Col, Modal, Button } from "antd";
-import { useState } from "react";
-import Croissant from '../img/croissant.png';
-import PanQue from '../img/pandequeso.png';
-import Brownie from '../img/brownie.png';
-import PanBrioche from '../img/panbrioche.png';
-import PanGalleta from '../img/pangalleta.png';
-import Cucas from '../img/cucas.png';
-import Cañas from '../img/cañas.png';
-import Panzerotti from '../img/panzerotti.png';
-import PanMasaMadre from '../img/panmasamadre.png';
-import PanHawaiano from '../img/panhawaiano.png';
-import Pandebono from '../img/pandebono.png';
-import Almojabanas from '../img/almojabanas.png';
-import Mogollas from '../img/mogolla.png';
-import PanAliñado from '../img/panaliñado.png';
-import MojiconQueso from '../img/mojiconconqueso.png';
-import PanBatido from '../img/panbatido.png';
+import { useState, useEffect } from "react";
 import FondoPan from '../img/FondoPan.webp'
 import { useTranslation } from "react-i18next";
+import { getProductsByCategory } from "../api/products";
 
 const cajaDecoracion = {
   display: 'flex',
@@ -72,38 +57,28 @@ const { Content } = Layout;
 
 const Panaderia = () => {
   const { t } = useTranslation();
-
-  const products = [
-    { title: [t("Croissant")], img: Croissant, description: [t("DCroissant")], price: 10 },
-    { title: [t("Pan Brioche Dulce")], img: PanBrioche, description: [t("DPan Brioche Dulce")], price: 10 },
-    { title: [t("Pan de Queso")], img: PanQue, description: [t("DPan de Queso")], price: 10 },
-    { title: [t("Pan Galleta")], img: PanGalleta, description: [t("DPan Galleta")], price: 10 },
-    { title: [t("Cucas")], img: Cucas, description: [t("DCucas")], price: 10 },
-    { title: [t("Caña")], img: Cañas, description: [t("DCaña")], price: 10 },
-    { title: [t("Panzerotti")], img: Panzerotti, description: [t("DPanzerotti")], price: 10 },
-    { title: [t("Pan de Masa Madre")], img: PanMasaMadre, description: [t("DPan de Masa Madre")], price: 10 },
-    { title: [t("Pan Hawaiano")], img: PanHawaiano, description: [t("DPan Hawaiano")], price: 10 },
-    { title: [t("Pandebono")], img: Pandebono, description: [t("DPandebono")], price: 10 },
-    { title: [t("Almojabana")], img: Almojabanas, description: [t("DAlmojabana")], price: 10 },
-    { title: [t("Mogolla")], img: Mogollas, description: [t("DMogolla")], price: 10 },
-    { title: [t("Pan aliñado")], img: PanAliñado, description: [t("DPan aliñado")], price: 10 },
-    { title: [t("Mojicón con Queso")], img: MojiconQueso, description: [t("DMojicón con Queso")], price: 10 },
-    { title: [t("Brownie")], img: Brownie, description: [t("DBrownie")], price: 10 },
-    { title: [t("Pan Batido")], img: PanBatido, description: [t("D  Pan Batido")], price: 10 },
-  ];
-  
-  const [isFlipped, setIsFlipped] = useState(Array(products.length).fill(false));
-  const [quantities, setQuantities] = useState(Array(products.length).fill(0));
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const [quantities, setQuantities] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFlipped, setIsFlipped] = useState([]);
 
-  const handleCardClick = (index) => {
-    setIsFlipped((prevFlipped) => {
-      const newFlipped = [...prevFlipped];
-      newFlipped[index] = !newFlipped[index];
-      return newFlipped;
-    });
-  };
+
+  useEffect(() => {
+    // Traer productos de la categoría "Panadería"
+
+    const fetchPanaderia = async () => {
+      try {
+        const response = await getProductsByCategory("panaderia");
+        setProducts(response.data);
+        setQuantities(Array(response.data.length).fill(0));
+        setIsFlipped(Array(response.data.length).fill(false));
+      } catch (error) {
+        //Manejo de error
+      }
+    };
+    fetchPanaderia();
+  }, []);
 
   const handleQuantityChange = (index, change, event) => {
     event.stopPropagation();
@@ -118,8 +93,16 @@ const Panaderia = () => {
       const newItem = { ...products[index], quantity: quantities[index] };
       setCart((prevCart) => [...prevCart, newItem]);
       setQuantities([...quantities.slice(0, index), 0, ...quantities.slice(index + 1)]);
-      setIsModalVisible(true); 
+      setIsModalVisible(true);  // Mostrar modal del carrito al agregar un producto
     }
+  };
+
+  const handleCardClick = (index) => {
+    setIsFlipped((prevFlipped) => {
+      const newFlipped = [...prevFlipped];
+      newFlipped[index] = !newFlipped[index];
+      return newFlipped;
+    });
   };
 
   const handleCloseModal = () => {
@@ -141,7 +124,7 @@ const Panaderia = () => {
           {Array.from({ length: Math.ceil(products.length / 4) }, (_, i) => (
             <Row key={i} gutter={[16, 16]} justify-content="center" style={{ margin:'30px 200px ' }}>
               {products.slice(i * 4, (i + 1) * 4).map((product, index) => (
-                <Col key={index} span={6}>
+                <Col key={product.id} span={6}>
                   <div
                     className={`custom-card ${isFlipped[i * 4 + index] ? "flipped" : ""}`}
                     onClick={() => handleCardClick(i * 4 + index)}
@@ -151,15 +134,15 @@ const Panaderia = () => {
                       <div className="card-front">
                         <div className="card-header">
                           <div className="card-image-wrapper">
-                            <img src={product.img} alt={product.title} className="card-image" />
+                            <img src={product.imageUrl} alt={product.name} className="card-image" />
                           </div>
                         </div>
-                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.title}</h3>
+                        <h3 style={{ padding: '15px', fontWeight: 900 }}>{product.name}</h3>
                       </div>
                       <div className="card-back">
-                        <div className="background-image" style={{ backgroundImage: `url(${product.img})` }} />
+                        <div className="background-image" style={{ backgroundImage: `url(${product.imageUrl})` }} />
                         <div className="card-content">
-                          <h3 className="product-name">{product.title}</h3>
+                          <h3 className="product-name">{product.name}</h3>
                           <p>{product.description}</p>
                           <p><strong>${product.price}</strong></p>
                           <div className="quantity-controls">
@@ -197,7 +180,7 @@ const Panaderia = () => {
         {/* Modal para mostrar el carrito */}
       <Modal
         title="Tu Carrito"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCloseModal}
         footer={[
           <Button key="back" onClick={handleCloseModal}>
@@ -213,9 +196,9 @@ const Panaderia = () => {
           <div>
             {cart.map((item, index) => (
               <div key={index} className="carrito-item" style={{ display: "flex", marginBottom: "15px" }}>
-                <img src={item.img} alt={item.title} style={{ width: "50px", marginRight: "10px" }} />
+                <img src={item.imageUrl} alt={item.name} style={{ width: "50px", marginRight: "10px" }} />
                 <div>
-                  <h3>{item.title}</h3>
+                  <h3>{item.name}</h3>
                   <p>{`Precio: $${item.price}`}</p>
                   <p>{`Cantidad: ${item.quantity}`}</p>
                 </div>

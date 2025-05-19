@@ -187,7 +187,7 @@ const Bebidas = () => {
         {/* Modal con carrito */}
               <Modal
         title="Tu Carrito"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCloseModal}
         footer={[
           <Button key="back" onClick={handleCloseModal}>
@@ -203,7 +203,7 @@ const Bebidas = () => {
           <div>
             {cart.map((item, index) => (
               <div key={index} className="carrito-item" style={{ display: 'flex', marginBottom: '15px' }}>
-                <img src={item.img} alt={item.title} style={{ width: '50px', marginRight: '10px' }} />
+                <img src={item.imageUrl} alt={item.title} style={{ width: '50px', marginRight: '10px' }} />
                 <div>
                   <h3>{item.title}</h3>
                   <p>{`Precio: $${item.price}`}</p>
