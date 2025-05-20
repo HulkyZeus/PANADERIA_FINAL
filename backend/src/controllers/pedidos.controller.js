@@ -87,7 +87,7 @@ export const crearPedido = async (req, res) => {
       metodo_pago,
       productos,
       total,
-      estado: 'pendiente',
+      estado: 'confirmado',
       fecha: new Date()
     });
 
@@ -144,5 +144,37 @@ export const eliminarPedido = async (req, res) => {
   } catch (error) {
     console.error("Error al eliminar pedido:", error);
     res.status(500).json({ message: "Error al eliminar el pedido" });
+  }
+};
+
+export const obtenerPedidosPorEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    
+    // Primero encontrar el cliente por email
+    const cliente = await Cliente.findOne({ email });
+    
+    if (!cliente) {
+      return res.status(404).json({ 
+        success: false,
+        message: "Cliente no encontrado" 
+      });
+    }
+
+    // Luego obtener los pedidos de ese cliente
+    const pedidos = await Pedido.find({ cliente_id: cliente._id })
+      .populate('cliente_id', 'name address celular email')
+      .sort({ fecha: -1 }); // Ordenar por fecha descendente
+
+    res.json({
+      success: true,
+      data: pedidos
+    });
+  } catch (error) {
+    console.error("Error al obtener pedidos por email:", error);
+    res.status(500).json({ 
+      success: false,
+      message: "Error al obtener los pedidos" 
+    });
   }
 };

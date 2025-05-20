@@ -10,11 +10,11 @@ import {
   Row,
   Col,
   Card,
-  notification, // <-- Agrega esta línea
+  notification,
 } from "antd";
 import styled from "@emotion/styled";
-import { createEventoRequest } from "../api/eventos"; // importa la función
-import { getProducts } from "../api/products"; // Corrige la ruta y el nombre
+import { createEventoRequest } from "../api/eventos"; 
+import { getProducts } from "../api/products"; 
 
 const { Option } = Select;
 const { TextArea } = Input;

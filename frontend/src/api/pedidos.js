@@ -4,6 +4,8 @@ export const getPedidosRequest = () => axios.get("/pedidos");
 
 export const getPedidoRequest = (id) => axios.get(`/pedidos/${id}`);
 
+export const getPedidosByEmailRequest = (email) => axios.get(`/pedidos/email/${email}`);
+
 export const createPedidoRequest = (pedido) => axios.post("/pedidos", pedido);
 
 export const updatePedidoRequest = (id, pedido) => axios.put(`/pedidos/${id}`, pedido);

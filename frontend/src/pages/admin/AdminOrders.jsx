@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Space, Button, message, Modal, Descriptions } from 'antd';
-import { getPedidosRequest, updatePedidoRequest } from '../../api/pedidos';
+import { Table, Tag, Space, Button, message, Modal, Descriptions, Select } from 'antd';
+import { getPedidosRequest, updatePedidoRequest, deletePedidoRequest } from '../../api/pedidos';
 import { useAuth } from '../../context/AuthContext';
-import { EyeOutlined, StopOutlined } from '@ant-design/icons';
+import { EyeOutlined, EditOutlined, CrownOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAdminModalVisible, setIsAdminModalVisible] = useState(false);
   const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
@@ -66,9 +67,8 @@ const AdminOrders = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      'pendiente': 'gold',
-      'en_proceso': 'blue',
-      'completado': 'green',
+      'confirmado': 'green',
+      'completado': 'blue',
       'cancelado': 'red'
     };
     return colors[status] || 'default';
@@ -79,13 +79,38 @@ const AdminOrders = () => {
     setIsModalVisible(true);
   };
 
-  const handleCancelOrder = async (order) => {
+  const handleAdminActions = (order) => {
+    setSelectedOrder(order);
+    setIsAdminModalVisible(true);
+  };
+
+  const handleDeleteOrder = async (order) => {
     try {
-      await updatePedidoRequest(order._id, { estado: 'cancelado' });
-      message.success('Pedido cancelado correctamente');
+      await deletePedidoRequest(order._id);
+      message.success('Pedido eliminado correctamente');
+      setIsAdminModalVisible(false);
       fetchOrders();
     } catch (error) {
-      message.error('Error al cancelar el pedido');
+      message.error('Error al eliminar el pedido');
+    }
+  };
+
+  const handleStatusChange = async (newStatus) => {
+    try {
+      const updatedOrder = {
+        ...selectedOrder,
+        estado: newStatus,
+        cliente_id: selectedOrder.cliente_id._id,
+        metodo_pago: selectedOrder.metodo_pago,
+        productos: selectedOrder.productos,
+        total: selectedOrder.total
+      };
+      await updatePedidoRequest(selectedOrder._id, updatedOrder);
+      message.success('Estado del pedido actualizado correctamente');
+      setIsAdminModalVisible(false);
+      fetchOrders();
+    } catch (error) {
+      message.error('Error al actualizar el estado del pedido');
     }
   };
 
@@ -131,7 +156,7 @@ const AdminOrders = () => {
       key: 'estado',
       render: (estado) => (
         <Tag color={getStatusColor(estado)}>
-          {estado ? estado.toUpperCase() : 'PENDIENTE'}
+          {estado ? estado.toUpperCase() : 'CONFIRMADO'}
         </Tag>
       )
     },
@@ -160,15 +185,14 @@ const AdminOrders = () => {
           >
             Ver
           </Button>
-          {record.estado !== 'cancelado' && (
-            <Button
-              danger
-              icon={<StopOutlined />}
-              onClick={() => handleCancelOrder(record)}
-            >
-              Cancelar
-            </Button>
-          )}
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => handleAdminActions(record)}
+            style={{ backgroundColor: '#fff', color: '#1890ff', 	border: '1px solid #1890ff' }}
+          >
+            Cambiar
+          </Button>
         </Space>
       )
     }
@@ -223,6 +247,45 @@ const AdminOrders = () => {
             <Descriptions.Item label="Total">${selectedOrder.total?.toFixed(2)}</Descriptions.Item>
             <Descriptions.Item label="Fecha">{new Date(selectedOrder.fecha).toLocaleString()}</Descriptions.Item>
           </Descriptions>
+        )}
+      </Modal>
+
+      <Modal
+        title="Acciones Administrativas"
+        open={isAdminModalVisible}
+        onCancel={() => setIsAdminModalVisible(false)}
+        footer={null}
+      >
+        {selectedOrder && (
+          <div style={{ padding: '20px' }}>
+            <h3>Pedido #{selectedOrder._id.substring(0, 8)}</h3>
+            <p>Estado actual: <Tag color={getStatusColor(selectedOrder.estado)}>{selectedOrder.estado?.toUpperCase()}</Tag></p>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <h4>Cambiar Estado</h4>
+              <Select
+                style={{ width: '100%', marginBottom: '10px' }}
+                defaultValue={selectedOrder.estado}
+                onChange={handleStatusChange}
+              >
+                <Select.Option value="confirmado">Confirmado</Select.Option>
+                <Select.Option value="completado">Completado</Select.Option>
+                <Select.Option value="cancelado">Cancelado</Select.Option>
+              </Select>
+            </div>
+
+            <div style={{ marginTop: '20px' }}>
+              <h4>Eliminar Pedido</h4>
+              <Button
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => handleDeleteOrder(selectedOrder)}
+                style={{ width: '100%' }}
+              >
+                Eliminar Pedido
+              </Button>
+            </div>
+          </div>
         )}
       </Modal>
     </div>
