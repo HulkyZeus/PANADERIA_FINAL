@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Card, Typography, Space, Tag } from 'antd';
+import { Layout, Card, Typography, Space, Tag, Button} from 'antd';
 import { CheckCircleFilled } from '@ant-design/icons';
 import styled from '@emotion/styled';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -39,33 +39,105 @@ const PedidoConfirmado = () => {
             <Text type="secondary">Tu pedido ha sido procesado correctamente</Text>
           </div>
 
-          <Space direction="vertical" size="large" style={{ width: '100%' }}>
-            <div>
-              <Title level={4}>Detalles del Pedido</Title>
-              <Text>Cliente: {pedido.name}</Text><br />
-              <Text>Dirección: {pedido.address}</Text><br />
-              <Text>Cédula: {pedido.cedula}</Text><br />
-              <Text>Celular: {pedido.celular}</Text><br />
-              <Text>Método de Pago: {pedido.metodo_pago}</Text>
+          <Space direction="vertical" size="large" style={{ width: '100%'}}>
+          <div>
+            <Title level={4}>Detalles del Pedido</Title>
+
+            {/* Línea por campo */}
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Text strong>Cliente:</Text>
+              <Text>{pedido.name}</Text>
             </div>
 
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Text strong>Dirección:</Text>
+              <Text>{pedido.address}</Text>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Text strong>Cédula:</Text>
+              <Text>{pedido.cedula}</Text>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Text strong>Celular:</Text>
+              <Text>{pedido.celular}</Text>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Text strong>Método de Pago:</Text>
+              <Text>{pedido.metodo_pago}</Text>
+            </div>
+          </div>
+
+            <div style={{ flex: 2, textAlign: 'left' }}>
               <Title level={4}>Productos</Title>
+
+              {/* Encabezados */}
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                fontWeight: 'bold', 
+                marginBottom: '8px' 
+              }}>
+                <div style={{ flex: 1.5, textAlign: 'left', color: 'grey'}}>Producto</div>
+                <div style={{ flex: 1, textAlign: 'center', color: 'grey' }}>Cantidad</div>
+                <div style={{ flex: 1.5, textAlign: 'right', color: 'grey' }}>Precio</div>
+              </div>
+
+              {/* Lista de productos */}
               {pedido.productos.map((producto, index) => (
-                <div key={index} style={{ marginBottom: '10px' }}>
-                  <Text>{producto.name} x{producto.quantity} - ${(producto.price * producto.quantity).toFixed(2)}</Text>
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: '6px'
+                  }}
+                >
+                  <div style={{ flex: 1.5, textAlign: 'left' }}>
+                    <Text>{producto.name}</Text>
+                  </div>
+                  <div style={{ flex: 1, textAlign: 'center' }}>
+                    <Text>x{producto.quantity}</Text>
+                  </div>
+                  <div style={{ flex: 1.5, textAlign: 'right' }}>
+                    <Text>${(producto.price * producto.quantity).toFixed(2)}</Text>
+                  </div>
                 </div>
               ))}
-            </div>
 
-            <div>
-              <Title level={4}>Total</Title>
-              <Text strong>${pedido.total.toFixed(2)}</Text>
-            </div>
-
-            <div>
-              <Title level={4}>Estado</Title>
-              <Tag color="green">{pedido.estado.toUpperCase()}</Tag>
+              {/* Total y estado */}
+              <div style={{ marginTop: '16px', borderTop: '1px solid #ccc', paddingTop: '8px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Title level={4} style={{ margin: 0 }}>Total</Title>
+                  <Text strong style={{ fontSize: '16px' }}>${pedido.total.toFixed(2)}</Text>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Title level={4} style={{ margin: 0 }}>Estado</Title>
+                  <Tag color={pedido.estado === 'confirmado' ? 'green' : 'green'}>
+                    {pedido.estado.toUpperCase()}
+                  </Tag>
+                </div>
+              </div>
+              {/* Botón para regresar */}
+              <div style={{ marginTop: '24px', textAlign: 'center' }}>
+                <Button type="default" onClick={() => window.location.href = '/'}>
+                  Regresar al comercio
+                </Button>
+              </div>
             </div>
           </Space>
         </StyledCard>

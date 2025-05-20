@@ -6,6 +6,7 @@ import {
   obtenerPedidoPorId,
   actualizarPedido,
   eliminarPedido,
+  obtenerPedidosPorEmail,
 } from "../controllers/pedidos.controller.js";
 import { validateSchema } from "../middlewares/validator.middleware.js";
 import { pedidoSchema } from "../schema/pedidos.schema.js";
@@ -37,5 +38,8 @@ router.put(
 
 // Eliminar un pedido
 router.delete("/pedidos/:id", authRequired, eliminarPedido);
+
+// Obtener pedidos por email de usuario
+router.get("/pedidos/email/:email", authRequired, obtenerPedidosPorEmail);
 
 export default router;

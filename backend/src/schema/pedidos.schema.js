@@ -15,7 +15,7 @@ export const pedidoSchema = z.object({
   total: z.number({
     required_error: "Total es requerido",
   }),
-  estado: z.enum(['pendiente', 'en_proceso', 'completado', 'cancelado'], {
+  estado: z.enum(['confirmado', 'completado', 'cancelado'], {
     required_error: "Estado es requerido",
   }),
   fecha: z.string().optional(),

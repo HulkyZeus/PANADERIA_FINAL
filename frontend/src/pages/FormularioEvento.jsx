@@ -10,7 +10,7 @@ import {
   Row,
   Col,
   Card,
-  notification, // <-- Agrega esta línea
+  notification,
 } from "antd";
 import styled from "@emotion/styled";
 import { createEventoRequest } from "../api/eventos"; // importa la función
