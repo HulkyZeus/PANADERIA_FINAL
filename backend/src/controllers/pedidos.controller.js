@@ -84,6 +84,7 @@ export const crearPedido = async (req, res) => {
 
     const nuevoPedido = new Pedido({
       cliente_id: cliente._id,
+      usuario_id: req.user.id,
       metodo_pago,
       productos,
       total,
@@ -175,6 +176,27 @@ export const obtenerPedidosPorEmail = async (req, res) => {
     res.status(500).json({ 
       success: false,
       message: "Error al obtener los pedidos" 
+    });
+  }
+};
+
+export const obtenerPedidosPorUsuarioId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const pedidos = await Pedido.find({ usuario_id: id })
+      .populate('cliente_id', 'name address celular email')
+      .sort({ fecha: -1 });
+
+    res.json({
+      success: true,
+      data: pedidos
+    });
+  } catch (error) {
+    console.error("Error al obtener pedidos por usuario_id:", error);
+    res.status(500).json({ 
+      success: false,
+      message: "Error al obtener los pedidos"
     });
   }
 };

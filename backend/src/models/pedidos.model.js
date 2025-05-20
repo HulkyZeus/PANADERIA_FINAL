@@ -7,6 +7,11 @@ const pedidoSchema = new mongoose.Schema({
     ref: "Cliente",
     required: true
   },
+  usuario_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   metodo_pago: {
     type: String,
     required: true,

@@ -216,6 +216,7 @@ const UserDashboard = () => {
   }, [profile, isEditing, reset]);
 
   const handleUpdateProfile = async (data) => {
+    console.log("Datos enviados al backend: ", data); // 👈 Verifica los datos enviados
     try {
       await updateProfile(data);
       message.success('Perfil actualizado correctamente');
@@ -407,7 +408,7 @@ const UserDashboard = () => {
             </FormGroup>
 
             <div>
-              <Button type="submit" primary disabled={loading}>
+              <Button htmlType="submit" primary disabled={loading}>
                 {loading ? 'Guardando...' : 'Guardar cambios'}
               </Button>
               <Button 
@@ -464,7 +465,7 @@ const UserDashboard = () => {
             </FormGroup>
 
             <div>
-              <Button type="submit" primary disabled={loading}>
+              <Button htmlType="submit" primary disabled={loading}>
                 {loading ? 'Guardando...' : 'Cambiar contraseña'}
               </Button>
               <Button 

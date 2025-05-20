@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true
+        unique: true,
+        match: [/^[A-Za-zÀ-ÿ0-9_ ]+$/, "Solo letras, números, guiones bajos (_) y espacios"]
     },
     email: {
         type: String,
