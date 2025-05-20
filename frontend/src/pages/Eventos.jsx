@@ -77,6 +77,19 @@ const P2 = styled.p`
   font-weight: 400;
 `;
 
+const CustomButton = styled.button`
+  width: 400px;
+  height: 40px;
+  background-color: #bb8f51 !important;
+  border-color: #bb8f51 important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &:hover {
+    background-color: #a0522d !important;
+    border-color: #a0522d !important;
+  }
+`
+
 const Eventos = () => {
   const { t } = useTranslation();
 
@@ -221,19 +234,9 @@ const Eventos = () => {
           style={{ marginTop: "20px", marginBottom: "20px" }}
         >
           <Link to="/FormularioEvento" style={{ textDecoration: "none" }}>
-            <button
-              style={{
-                backgroundColor: "#725D42",
-                color: "white",
-                border: "none",
-                padding: "10px 20px",
-                fontSize: "40px",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
+            <CustomButton style={{ borderRadius: "5px", cursor: "pointer", padding: "10px", margin: "5px 0px", border: "1px solid #ccc", color: "white", fontSize: "16px", fontWeight: "bold" }}>
               {t("Agenda con nosotros")}
-            </button>
+            </CustomButton>
           </Link>
         </Flex>
         ...

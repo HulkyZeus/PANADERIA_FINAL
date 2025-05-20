@@ -15,8 +15,25 @@ const DivInput = styled.div`
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
-  height: 70px;
+  height: 40px;
 `
+
+const CustomButton = styled.button`
+  width: 400px;
+  height: 40px;
+  padding: 10px;
+  margin: 5px 0px;
+  background-color: #bb8f51 !important;
+  border-color: #bb8f51 important;
+  color: #fff;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &:hover {
+    background-color: #a0522d !important;
+    border-color: #a0522d !important;
+    color: #fff !important;
+  }
+`;
 
 const RegisterPage = () => {
   const { 
@@ -141,25 +158,12 @@ const RegisterPage = () => {
                   )}
                 </DivInput>
 
-                <button 
+                <CustomButton
                   type='submit' 
                   disabled={loading}
-                  style={{ 
-                    width: '400px', 
-                    height: '40px', 
-                    borderRadius: '5px', 
-                    padding: '10px', 
-                    margin: '5px 0px', 
-                    border: '1px solid #ccc', 
-                    backgroundColor: '#f0ca83', 
-                    color: 'black', 
-                    fontSize: '16px', 
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    opacity: loading ? 0.7 : 1
-                  }}
                 >
                   {loading ? 'Registrando...' : 'Registrar'}
-                </button>
+                </CustomButton>
               </form>
               
               <Text style={{ width: '100%', textAlign: 'center', display: 'block', fontSize: '16px', margin: '5px 0px' }}>
