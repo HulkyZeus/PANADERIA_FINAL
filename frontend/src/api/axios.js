@@ -1,45 +1,36 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:4000/api',
-    withCredentials: true,
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
+  baseURL: 'http://localhost:4000/api',
+  withCredentials: true, // Solo esto para autenticación por cookies
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
 });
 
-// Interceptor para agregar el token a todas las peticiones
-instance.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('token') || Cookies.get('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        console.error('Request error:', error);
-        return Promise.reject(error);
-    }
-);
+// Elimina el interceptor de request que añade el token Bearer
+// ya que estás usando cookies HTTP-Only
 
-// Interceptor para manejar errores de autenticación y logging
+// Modifica el interceptor de response:
 instance.interceptors.response.use(
-    (response) => {
-        console.log('Response:', response.config.url, response.data);
-        return response;
-    },
-    (error) => {
-        console.error('Response error:', error.config?.url, error.response?.data);
-        if (error.response?.status === 401) {
-            localStorage.removeItem('token');
-            Cookies.remove('token');
-            window.location.href = '/login';
-        }
-        return Promise.reject(error);
+  (response) => {
+    console.log('Response:', response.config.url, response.data);
+    return response;
+  },
+  (error) => {
+    console.error('Response error:', error.config?.url, error.response?.data);
+    
+    // Solo redirigir para errores 401 en rutas protegidas
+    if (error.response?.status === 401 && 
+        !error.config?.url.includes('/login') && 
+        !error.config?.url.includes('/register') &&
+        !error.config?.url.includes('/verify')) {
+      window.location.href = '/login';
     }
+    
+    return Promise.reject(error);
+  }
 );
 
 export default instance;
