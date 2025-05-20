@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import { getPedidosRequest, getPedidosByEmailRequest } from "../api/pedidos";
 import styled from '@emotion/styled';
-import { message, Layout, Row, Col, Card, Tag, Divider, Button, Table, Modal, Descriptions } from 'antd';
+import { message, Layout, Row, Col, Card, Tag, Divider, Table, Modal, Descriptions } from 'antd';
 import { UserOutlined, MailOutlined, ShoppingOutlined, CalendarOutlined, CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import { Space } from 'antd';
 
@@ -61,6 +61,27 @@ const ProfileCard = styled(Card)`
   }
 `;
 
+const Button = styled.button`
+  padding: 10px 15px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: ${props => props.primary ? '#725D42' : '#f0f0f0'};
+  color: ${props => props.primary ? 'white' : '#333'};
+  transition: all 0.3s ease;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
 const FormGroup = styled.div`
   margin-bottom: 24px;
   
@@ -91,37 +112,6 @@ const Input = styled.input`
   margin-top: 5px;
 `;
 
-const StyledButton = styled.button`
-  padding: 12px 24px;
-  margin-right: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: ${props => props.primary ? '#725D42' : '#f0f0f0'};
-  color: ${props => props.primary ? 'white' : '#333'};
-  transition: all 0.3s ease;
-  font-size: 16px;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  svg {
-    margin-right: 8px;
-  }
-`;
-
 const ErrorText = styled.p`
   color: #ff4d4f;
   margin-top: 5px;
@@ -149,6 +139,7 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+
   const [pedidos, setPedidos] = useState([]);
   const [loadingPedidos, setLoadingPedidos] = useState(false);
   const [orders, setOrders] = useState([]);
@@ -350,10 +341,14 @@ const UserDashboard = () => {
 
   return (
     <DashboardContainer>
-      <Row gutter={[24, 24]} justify="center">
-        <Col xs={24} sm={24} md={20} lg={16} xl={14}>
+      <Row>
+        <Col span={2}>
+        </Col>
+        <Col span={20}>
           <ProfileCard
-            title="Mi Perfil"
+              title="Mi Perfil"
+              headStyle={{ borderBottom: '1px solid #f0f0f0' }}
+              bodyStyle={{ padding: '24px' }}
           >
             {error && <ErrorText>{error}</ErrorText>}
             {success && <SuccessText>{success}</SuccessText>}
@@ -406,17 +401,17 @@ const UserDashboard = () => {
               {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
             </FormGroup>
 
-            <div>
+            <div style={{ marginTop: 24 }}>
               <Button type="submit" primary disabled={loading}>
                 {loading ? 'Guardando...' : 'Guardar cambios'}
               </Button>
               <Button 
-                type="button" 
+                primary
                 onClick={() => setIsEditing(false)}
                 disabled={loading}
               >
                 Cancelar
-              </Button>
+              </Button>              
             </div>
           </form>
         ) : isChangingPassword ? (
@@ -468,7 +463,7 @@ const UserDashboard = () => {
                 {loading ? 'Guardando...' : 'Cambiar contraseña'}
               </Button>
               <Button 
-                type="button" 
+                primary
                 onClick={() => setIsChangingPassword(false)}
                 disabled={loading}
               >
@@ -523,39 +518,41 @@ const UserDashboard = () => {
               scroll={{ x: true }}
             />
           </ProfileCard>
+
+          <Modal
+            title="Detalles del Pedido"
+            open={isModalVisible}
+            onCancel={() => setIsModalVisible(false)}
+            footer={null}
+            width={800}
+          >
+            {selectedOrder && (
+              <Descriptions bordered column={1}>
+                <Descriptions.Item label="ID">{selectedOrder._id}</Descriptions.Item>
+                <Descriptions.Item label="Método de Pago">{selectedOrder.metodo_pago}</Descriptions.Item>
+                <Descriptions.Item label="Estado">
+                  <Tag color={getStatusColor(selectedOrder.estado)}>
+                    {selectedOrder.estado?.toUpperCase()}
+                  </Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="Productos">
+                  <ul style={{ padding: 0, margin: 0 }}>
+                    {selectedOrder.productos.map((producto, index) => (
+                      <li key={index} style={{ listStyle: 'none' }}>
+                        {producto.name} x{producto.quantity} - ${producto.price * producto.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                </Descriptions.Item>
+                <Descriptions.Item label="Total">${selectedOrder.total?.toFixed(2)}</Descriptions.Item>
+                <Descriptions.Item label="Fecha">{new Date(selectedOrder.fecha).toLocaleString()}</Descriptions.Item>
+              </Descriptions>
+            )}
+          </Modal>
+        </Col>
+        <Col span={2}>
         </Col>
       </Row>
-
-      <Modal
-        title="Detalles del Pedido"
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={800}
-      >
-        {selectedOrder && (
-          <Descriptions bordered column={1}>
-            <Descriptions.Item label="ID">{selectedOrder._id}</Descriptions.Item>
-            <Descriptions.Item label="Método de Pago">{selectedOrder.metodo_pago}</Descriptions.Item>
-            <Descriptions.Item label="Estado">
-              <Tag color={getStatusColor(selectedOrder.estado)}>
-                {selectedOrder.estado?.toUpperCase()}
-              </Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="Productos">
-              <ul style={{ padding: 0, margin: 0 }}>
-                {selectedOrder.productos.map((producto, index) => (
-                  <li key={index} style={{ listStyle: 'none' }}>
-                    {producto.name} x{producto.quantity} - ${producto.price * producto.quantity}
-                  </li>
-                ))}
-              </ul>
-            </Descriptions.Item>
-            <Descriptions.Item label="Total">${selectedOrder.total?.toFixed(2)}</Descriptions.Item>
-            <Descriptions.Item label="Fecha">{new Date(selectedOrder.fecha).toLocaleString()}</Descriptions.Item>
-          </Descriptions>
-        )}
-      </Modal>
     </DashboardContainer>
   );
 };
