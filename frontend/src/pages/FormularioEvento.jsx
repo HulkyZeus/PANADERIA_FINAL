@@ -13,8 +13,9 @@ import {
   notification,
 } from "antd";
 import styled from "@emotion/styled";
-import { createEventoRequest } from "../api/eventos"; 
-import { getProducts } from "../api/products"; 
+import { createEventoRequest } from "../api/eventos"; // importa la función
+import { getProducts } from "../api/products"; // Corrige la ruta y el nombre
+import { useTranslation } from "react-i18next";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -34,7 +35,21 @@ const StyledCard = styled(Card)`
   border-radius: 10px;
 `;
 
+const CustomButton = styled.button`
+  width: 100%;
+  height: 40px;
+  background-color: #bb8f51 !important;
+  border-color: #bb8f51 important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &:hover {
+    background-color: #a0522d !important;
+    border-color: #a0522d !important;
+  }
+`;
+
 const FormularioEvento = () => {
+  const { t } = useTranslation();
   // Obtén el usuario desde localStorage (ajusta según tu lógica real)
   const usuario = JSON.parse(localStorage.getItem("usuario")); // o como lo guardes
   const usuario_id = usuario ? usuario._id : ""; // o usuario.id según tu backend
@@ -113,9 +128,9 @@ const FormularioEvento = () => {
   const handleSubmit = async () => {
     if (!validarCampos()) {
       notification.error({
-        message: "Campos incompletos",
+        message: t("Campos incompletos"),
         description:
-          "Por favor, completa todos los campos obligatorios antes de enviar.",
+          t("Por favor, completa todos los campos obligatorios antes de enviar."),
       });
       return;
     }
@@ -131,60 +146,60 @@ const FormularioEvento = () => {
       };
       await createEventoRequest(eventoData);
       notification.success({
-        message: "Evento creado",
-        description: "El evento fue creado exitosamente.",
+        message: t("Evento creado"),
+        description: t("El evento fue creado exitosamente."),
       });
       setFormData(valoresIniciales); // Limpia el formulario
       window.scrollTo({ top: 0, behavior: "smooth" }); // Lleva al principio de la página
     } catch (error) {
-      alert("Error al crear el evento");
+      alert(t("Error al crear el evento"));
       console.error(error);
     }
   };
 
   return (
     <FormContainer>
-      <StyledCard title="Formulario de Evento" bordered={false}>
+      <StyledCard title={t("Formulario de Evento")} bordered={false}>
         <Form layout="vertical" onFinish={handleSubmit}>
-          <Form.Item label="Nombre del Evento" required>
+          <Form.Item label={t("Nombre del Evento")} required>
             <Input
-              placeholder="Ingrese el nombre del evento"
+              placeholder={t("Ingrese el nombre del evento")}
               value={formData.nombre_evento}
               onChange={(e) => handleChange("nombre_evento", e.target.value)}
             />
           </Form.Item>
 
-          <Form.Item label="Tipo de Evento" required>
+          <Form.Item label={t("Tipo de Evento")} required>
             <Select
               value={formData.tipo_evento}
               onChange={(value) => handleChange("tipo_evento", value)}
             >
-              <Option value="Matrimonio">Matrimonio</Option>
-              <Option value="Baby Shower">Baby Shower</Option>
-              <Option value="Aniversario">Aniversario</Option>
-              <Option value="Cumpleaños">Cumpleaños</Option>
-              <Option value="Otros">Otros</Option>
+              <Option value="Matrimonio">{t("Matrimonio")}</Option>
+              <Option value="Baby Shower">{t("Baby Shower")}</Option>
+              <Option value="Aniversario">{t("Aniversario")}</Option>
+              <Option value="Cumpleaños">{t("Cumpleanos")}</Option>
+              <Option value="Otros">{t("Otros")}</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item label="Descripción" required>
+          <Form.Item label={t("Descripcion")} required>
             <TextArea
               rows={4}
-              placeholder="Ingrese una descripción del evento"
+              placeholder={t("Ingrese una descripción del evento")}
               value={formData.descripcion}
               onChange={(e) => handleChange("descripcion", e.target.value)}
             />
           </Form.Item>
 
-          <Form.Item label="Dirección del Evento" required>
+          <Form.Item label={t("Dirección del Evento")} required>
             <Input
-              placeholder="Ingrese la dirección del evento"
+              placeholder={t("Ingrese la dirección del evento")}
               value={formData.direccion_evento}
               onChange={(e) => handleChange("direccion_evento", e.target.value)}
             />
           </Form.Item>
 
-          <Form.Item label="Fecha del Evento" required>
+          <Form.Item label={t("Fecha del Evento")} required>
             <DatePicker
               style={{ width: "100%" }}
               value={formData.fecha_evento}
@@ -192,7 +207,7 @@ const FormularioEvento = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Hora del Evento" required>
+          <Form.Item label={t("Hora del Evento")} required>
             <TimePicker
               style={{ width: "100%" }}
               value={formData.hora_evento}
@@ -200,7 +215,7 @@ const FormularioEvento = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Cantidad de Personas" required>
+          <Form.Item label={t("Cantidad de Personas")} required>
             <InputNumber
               min={1}
               style={{ width: "100%" }}
@@ -209,12 +224,12 @@ const FormularioEvento = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Productos">
+          <Form.Item label={t("Productos")}>
             {formData.productos.map((producto, index) => (
               <Row gutter={16} key={index} align="middle">
                 <Col span={10}>
                   <Select
-                    placeholder="Seleccione un producto"
+                    placeholder={t("Seleccione un producto")}
                     value={producto.producto_id}
                     onChange={(value) =>
                       handleProductoChange(index, "producto_id", value)
@@ -237,7 +252,7 @@ const FormularioEvento = () => {
                 <Col span={8}>
                   <InputNumber
                     min={1}
-                    placeholder="Cantidad"
+                    placeholder={t("Cantidad")}
                     value={producto.cantidad}
                     onChange={(value) =>
                       handleProductoChange(index, "cantidad", value)
@@ -245,13 +260,12 @@ const FormularioEvento = () => {
                   />
                 </Col>
                 <Col span={6}>
-                  <Button
+                  <CustomButton
                     type="danger"
                     onClick={() => removeProducto(index)}
-                    style={{ width: "100%" }}
-                  >
-                    Quitar
-                  </Button>
+                    style={{ borderRadius: "5px", cursor: "pointer", padding: "10px", margin: "5px 0px", border: "1px solid #ccc", color: "white", fontSize: "12px", fontWeight: "bold", height: "40px" }}>
+                    {t("Quitar")}
+                  </CustomButton>
                 </Col>
               </Row>
             ))}
@@ -260,22 +274,17 @@ const FormularioEvento = () => {
               onClick={addProducto}
               style={{ marginTop: "10px", width: "100%" }}
             >
-              Agregar Producto
+             {t("Agregar Producto")}
             </Button>
           </Form.Item>
 
           <Form.Item>
-            <Button
+            <CustomButton
               type="primary"
               htmlType="submit"
-              style={{
-                backgroundColor: "#725D42",
-                borderColor: "#725D42",
-                width: "100%",
-              }}
-            >
-              Enviar
-            </Button>
+              style={{ borderRadius: "5px", cursor: "pointer", padding: "10px", margin: "5px 0px", border: "1px solid #ccc", color: "white", fontSize: "16px", fontWeight: "bold" }}>
+                {t("Crear Evento")}
+            </CustomButton>
           </Form.Item>
         </Form>
       </StyledCard>

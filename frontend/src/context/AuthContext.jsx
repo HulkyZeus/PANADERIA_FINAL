@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import axios from '../api/axios';
 
 const AuthContext = createContext();
@@ -46,12 +46,6 @@ export const AuthProvider = ({ children }) => {
         withCredentials: true
       });
       
-      // Opcional: Iniciar sesión automáticamente después del registro
-      const { email, password } = userData;
-      if (email && password) {
-        return await login(email, password);
-      }
-      
       return response.data;
     } catch (error) {
       console.error('Register error:', error);
@@ -77,21 +71,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const checkAuth = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('/verify', {
-        withCredentials: true
-      });
-      setUser(response.data.user);
-      setIsAuthenticated(true);
-    } catch (error) {
-      setUser(null);
-      setIsAuthenticated(false);
-    } finally {
-      setLoading(false);
+const checkAuth = async () => {
+  try {
+    setLoading(true);
+    const response = await axios.get('/verify', {
+      withCredentials: true
+    });
+    
+    setUser(response.data.user);
+    setIsAuthenticated(true);
+    return true;
+  } catch (error) {
+    // Error 401 es esperado cuando no hay sesión
+    if (error.response?.status !== 401) {
+      console.error('Check auth error:', error);
+      setError(error.response?.data?.message || 'Error de verificación');
+    }
+    setUser(null);
+    setIsAuthenticated(false);
+    return false;
+  } finally {
+    setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   const value = {
     isAuthenticated,

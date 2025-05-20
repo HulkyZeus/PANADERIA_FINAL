@@ -141,10 +141,13 @@ export const verifyToken = async (req, res) => {
             }
 
             return res.json({
-                id: userFound._id,
-                username: userFound.username,
-                email: userFound.email,
-                role: userFound.role,
+                user: {
+                    id: userFound._id,
+                    username: userFound.username,
+                    email: userFound.email,
+                    role: userFound.role,
+                }
+                
             });
         });
     } catch (error) {

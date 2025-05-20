@@ -113,10 +113,20 @@ const Cabecera = () => {
   };
 
   const languageMenu = (
-    <Menu>
-      <Menu.Item onClick={() => handleLanguageChange('es')}>ES</Menu.Item>
-      <Menu.Item onClick={() => handleLanguageChange('en')}>EN</Menu.Item>
-    </Menu>
+    <Menu
+      items={[
+        {
+          key: 'es',
+          label: 'ES',
+          onClick: () => handleLanguageChange('es')
+        },
+        {
+          key: 'en',
+          label: 'EN',
+          onClick: () => handleLanguageChange('en')
+        }
+      ]}
+    />
   );
 
   const showModal = () => {
@@ -130,15 +140,17 @@ const Cabecera = () => {
   return (
     <Layout>
       <Header style={{ backgroundColor: "#f0ca83", padding: "0 50px", display: 'flex', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', width: '175px', justifyContent: 'space-evenly' }}>
           <Link to="/">
             <Imagen src={LogoSimple} alt="Logo" />
           </Link>
-          <Dropdown menu={languageMenu} trigger={['click']} style={{ marginLeft: '20px' }}>
-            <Space style={{ fontSize: '20px', color: '#541e12', cursor: 'pointer' }}>
-              {i18n.language.toUpperCase()}
-              <DownOutlined style={{ fontSize: '15px' }} />
-            </Space>
+          <Dropdown overlay={languageMenu} trigger={['click']}>
+            <a onClick={(e) => e.preventDefault()}>
+              <Space style={{ fontSize: '20px', color: '#541e12', cursor: 'pointer' }}>
+                {i18n.language.toUpperCase()}
+                <DownOutlined style={{ fontSize: '15px' }} />
+              </Space>  
+            </a>
           </Dropdown>
         </div>
 
@@ -157,11 +169,13 @@ const Cabecera = () => {
             {
               key: "menu",
               label: (
-                <Dropdown menu={{ items: menuItems }}>
-                  <Space style={{ color: '#541e12', cursor: 'pointer' }}>
-                    {t("Menú")}
-                    <DownOutlined style={{ fontSize: '15px' }} />
-                  </Space>
+                <Dropdown menu={{ items: menuItems }} trigger={['click']}>
+                  <a onClick={(e) => e.preventDefault()}>
+                    <Space style={{ color: '#541e12', cursor: 'pointer' }}>
+                      {t("Menú")}
+                      <DownOutlined style={{ fontSize: '15px' }} />
+                    </Space>
+                  </a>
                 </Dropdown>
               ),
             },
