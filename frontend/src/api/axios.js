@@ -20,15 +20,18 @@ instance.interceptors.response.use(
   },
   (error) => {
     console.error('Response error:', error.config?.url, error.response?.data);
-    
-    // Solo redirigir para errores 401 en rutas protegidas
-    if (error.response?.status === 401 && 
-        !error.config?.url.includes('/login') && 
-        !error.config?.url.includes('/register') &&
-        !error.config?.url.includes('/verify')) {
+
+    // Lista de rutas públicas que NO deben redirigir al login aunque den 401
+    const publicRoutes = ['/login', '/register', '/verify', '/api', '/menu', '/'];
+
+    const isPublic = publicRoutes.some(route =>
+      error.config?.url?.toLowerCase().includes(route)
+    );
+
+    if (error.response?.status === 401 && !isPublic) {
       window.location.href = '/login';
     }
-    
+
     return Promise.reject(error);
   }
 );

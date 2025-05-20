@@ -38,13 +38,21 @@ export const updateSelf = async (req, res) => {
   try {
     const userId = req.user.id;
     const { username, email } = req.body;
+    console.log("Datos recibidos para actualizar:", { username, email });
+
+    // Validación explícita
+    if (!username || !email) {
+      return res.status(400).json({
+        success: false,
+        message: "Faltan campos requeridos"
+      });
+    }
 
     if (email) {
       const emailExists = await User.findOne({ 
         email, 
         _id: { $ne: userId } 
       });
-      
       if (emailExists) {
         return res.status(409).json({ 
           success: false,
@@ -53,17 +61,14 @@ export const updateSelf = async (req, res) => {
       }
     }
 
-    const updateFields = {};
-    if (username) updateFields.username = username;
-    if (email) updateFields.email = email;
-    
+    const updateFields = { username, email };
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       updateFields,
       { 
         new: true,
-        runValidators: true,
-        select: '-password -refreshToken -__v' 
+        runValidators: true
       }
     );
 
@@ -89,17 +94,15 @@ export const updateSelf = async (req, res) => {
 
   } catch (error) {
     console.error("Error en updateSelf:", error);
-    
     if (error.code === 11000) {
       return res.status(409).json({ 
         success: false,
         message: "El nombre de usuario ya está en uso" 
       });
     }
-
     res.status(500).json({ 
       success: false,
-      message: "Error al actualizar los datos" 
+      message: "Error al actualizar los datos"
     });
   }
 };
