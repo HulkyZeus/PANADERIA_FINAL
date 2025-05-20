@@ -23,6 +23,20 @@
     "Tarta de Manzana":"Tarta de Manzana",
     "Cheesecake":"Cheesecake",
     "Delicioso y recién horneado":"Delicioso y recién horneado",
+    "Reseñas de nuestros clientes": "Reseñas de nuestros clientes",
+    "Filtrar por puntuación": "Filtrar por puntuación",
+    "Todas": "Todas",
+    "5 estrellas": "5 estrellas",
+    "4 estrellas": "4 estrellas",
+    "3 estrellas": "3 estrellas",
+    "2 estrellas": "2 estrellas",
+    "1 estrella": "1 estrella",
+    "Puntuación": "Puntuación",
+    "Por favor selecciona una puntuación": "Por favor selecciona una puntuación",
+    "Descripción": "Descripción",
+    "Por favor escribe una descripción": "Por favor escribe una descripción",
+    "Enviar reseña": "Enviar reseña",
+    "Danos tu opinión": "Danos tu opinión",
 
     
     "Menú": "Menú",
@@ -206,6 +220,7 @@
     "Paquete Completo":"Paquete Completo",
     "D1Paquete Completo":"Con nuestro Paquete Completo, nos encargamos de cada detalle para que tu evento sea un éxito. Desde el pastel perfecto hasta una deliciosa selección de bocadillos y bebidas, ofrecemos una experiencia integral que hará de tu celebración algo inolvidable. ",
     "D2Paquete Completo":"Nuestro equipo personaliza cada paquete según tus necesidades, para que tengas todo lo que necesitas en un solo lugar. Ya sea un matrimonio, cumpleaños, baby shower o aniversario, creamos un menú a medida, con productos frescos y de calidad, cuidando la presentación y el sabor en cada plato.",
+    "Agenda con nosotros": "Agenda con nosotros",
 
 
 
@@ -438,5 +453,46 @@
     "Subtotal": "Subtotal",
     "Total": "Total",
     "Realizar Pedido": "Realizar Pedido",
-    "No hay productos en el carrito": "No hay productos en el carrito"
+    "No hay productos en el carrito": "No hay productos en el carrito",
+
+    "Por favor, completa todos los campos obligatorios antes de enviar.": "Por favor, completa todos los campos obligatorios antes de enviar.",
+    "Evento creado": "Evento creado",
+    "El evento fue creado exitosamente.": "El evento fue creado exitosamente.",
+    "Error al crear el evento": "Error al crear el evento",
+    "Formulario de Evento": "Formulario de Evento",
+    "Nombre del Evento": "Nombre del Evento",
+    "Ingrese el nombre del evento": "Ingrese el nombre del evento",
+    "Tipo de Evento": "Tipo de Evento",
+    "Matrimonio": "Matrimonio",
+    "Baby Shower": "Baby Shower",
+    "Aniversario": "Aniversario",
+    "Cumpleanos": "Cumpleaños",
+    "Otros": "Otros",
+    "Descripcion": "Descripción",
+    "Ingrese una descripción del evento": "Ingrese una descripción del evento",
+    "Dirección del Evento": "Dirección del Evento",
+    "Ingrese la dirección del evento": "Ingrese la dirección del evento",
+    "Fecha del Evento": "Fecha del Evento",
+    "Hora del Evento": "Hora del Evento",
+    "Cantidad de Personas": "Cantidad de Personas",
+    "Productos": "Productos",
+    "Seleccione un producto": "Seleccione un producto",
+    "Quitar": "Quitar",
+    "Agregar Producto": "Agregar Producto",
+    "Enviar": "Enviar",
+    "Crear Evento": "Crear Evento",
+
+
+
+    "Inicio de sesión exitoso": "Inicio de sesión exitoso",
+    "Error al iniciar sesión": "Error al iniciar sesión",
+    "Inicio de Sesión": "Inicio de Sesión",
+    "Correo Electrónico": "Correo Electrónico",
+    "Necesitas ingresar el correo electrónico": "Necesitas ingresar el correo electrónico",
+    "Contraseña": "Contraseña",
+    "Necesitas ingresar la contraseña": "Necesitas ingresar la contraseña",
+    "Iniciando sesión...": "Iniciando sesión...",
+    "Iniciar Sesión": "Iniciar Sesión",
+    "¿Aún no tienes cuenta?": "¿Aún no tienes cuenta?",
+    "Regístrate ;)": "Regístrate ;)"
 }
